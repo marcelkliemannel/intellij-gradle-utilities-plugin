@@ -2,8 +2,9 @@
 
 <img src="src/main/resources/META-INF/pluginIcon.svg" alt="Plugin Logo" width="10%"/>
 
-This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. **It's available at the official IntelliJ plugin marketplace**.
+This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. [**It's available on the official IntelliJ plugin marketplace**](https://plugins.jetbrains.com/plugin/16800-gradle-utilities).
 
+<script defer src="https://plugins.jetbrains.com/assets/scripts/mp-widget.js"></script>
 
 (This plugin has no relation to the official Gradle project.)
 
@@ -59,6 +60,11 @@ Finds the latest Gradle releases (productive and pre releases) and provides usef
 This plugin is not seen as a library, this means that code changes do not necessarily adhere to the semantics version rules.
 
 If you want to contribute something, please follow the code style in the `.editorconfig` and sign your commits.
+
+## Planned Features
+
+- 
+- Make
 
 ## License
 
