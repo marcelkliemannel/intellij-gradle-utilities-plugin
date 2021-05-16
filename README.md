@@ -4,8 +4,6 @@
 
 This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. [**It's available on the official IntelliJ plugin marketplace**](https://plugins.jetbrains.com/plugin/16800-gradle-utilities).
 
-<script defer src="https://plugins.jetbrains.com/assets/scripts/mp-widget.js"></script>
-
 (This plugin has no relation to the official Gradle project.)
 
 ## Utilities
