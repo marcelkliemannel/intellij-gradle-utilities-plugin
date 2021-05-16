@@ -61,8 +61,8 @@ If you want to contribute something, please follow the code style in the `.edito
 
 ## Planned Features
 
-- 
-- Make
+- Cancel background tasks that are started from a dialog after the dialog was closed.
+- Make texts translatable.
 
 ## License
 
