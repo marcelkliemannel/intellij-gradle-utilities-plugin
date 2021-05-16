@@ -16,7 +16,7 @@ The utilities are available in the toolbar of the Gradle tool window (select *Vi
 
 Lists all running Gradle daemons with their status. The daemons can easily be terminated, or their command line can be viewed.
 
-<img src="screenshots/manage-gradle-daemons.png" alt="Manage Gradle Daemons" width="45%"/>
+<img src="screenshots/manage-gradle-daemons.png" alt="Manage Running Gradle Daemons" width="45%"/>
 
 ### Manage Gradle Home
 
@@ -28,25 +28,25 @@ Clears the whole Gradle caches. This includes all downloaded dependencies and Gr
 
 Lists all downloaded Gradle wrapper distributions and their sizes on the disk, which can be easily deleted.
 
-<img src="screenshots/manage-distributions.png" alt="Manage Gradle distributions" width="45%"/>
+<img src="screenshots/manage-distributions.png" alt="Manage Gradle Wrapper Distributions" width="45%"/>
 
 #### Manage Gradle Daemons Caches
 
 Lists all Gradle daemon caches and their sizes on the disk, which can be easily deleted.
 
-<img src="screenshots/manage-daemons-caches.png" alt="Manage Gradle daemons caches" width="45%"/>
+<img src="screenshots/manage-daemons-caches.png" alt="Manage Gradle Daemons Caches" width="45%"/>
 
 ### Collect Gradle Environment Information
 
 Collects information about the current Gradle environment, like relevant paths, versions, user/project Gradle properties and environment variables.
 
-<img src="screenshots/gradle-environment-information.png" alt="Gradle environment information" width="60%"/>
+<img src="screenshots/gradle-environment-information.png" alt="Collect Gradle Environment Information" width="60%"/>
 
 ### Find the Latest Gradle Releases
 
 Finds the latest Gradle releases (productive and pre releases) and provides useful links, like the release notes.
 
-<img src="screenshots/latest-gradle-releases.png" alt="Manage Gradle daemons caches" width="70%"/>
+<img src="screenshots/latest-gradle-releases.png" alt="Find the Latest Gradle Releases" width="70%"/>
 
 ### Other
 
