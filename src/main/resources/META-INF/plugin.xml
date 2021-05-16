@@ -1,0 +1,112 @@
+<idea-plugin>
+  <id>dev.turingcomplete.intellij-gradle-utilities-plugin</id>
+  <name>Gradle Utilities</name>
+  <vendor email="dev@marcelkliemannel.com" url="https://www.marcelkliemannel.com/project/intellij-gradle-utilities-plugin">Marcel Kliemannel</vendor>
+
+  <description><![CDATA[
+  <p>Provides some useful utilities to support the daily work with Gradle:</p>
+  <ul>
+    <li>List all running Gradle daemons with their status. The daemons can easily be terminated, or their command line can be viewed.</li>
+    <li>Manage Gradle home:
+      <ul>
+        <li>Clear the whole Gradle caches. This includes all downloaded dependencies and Gradle daemon caches.</li>
+        <li>List all downloaded Gradle wrapper distributions and their sizes on the disk, which can be easily deleted.</li>
+        <li>List all Gradle daemon caches and their sizes on the disk, which can be easily deleted.</li>
+      </ul>
+    </li>
+    <li>Collect information about the current Gradle environment, like relevant paths, versions, user/project Gradle properties and environment variables.</li>
+    <li>Verify Gradle wrapper JAR and distributions.</li>
+    <li>Edit user Gradle properties.</li>
+    <li>Find the latest Gradle releases.</li>
+    <li>Bookmarks to important Gradle related websites.</li>
+  </ul>
+
+  <p>The utilities are available via the toolbar of the Gradle tool window (select <i>View | Tool Windows | Gradle</i>) under the <b>Gradle Utilities</b> action popup button.</p>
+
+  <p>If you have any suggestions or found a bug, please create an issue on <a href="https://github.com/marcelkliemannel/intellij-gradle-utilities-plugin">GitHub</a> or use the contact form on the plugin homepage.</p>
+
+  <p>(This plugin has no relation to the official Gradle project.)</p>
+    ]]></description>
+
+  <depends>com.intellij.gradle</depends>
+  <depends>com.intellij.modules.platform</depends>
+
+  <idea-version since-build="211"/>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <notificationGroup id="dev.turingcomplete.intellij-gradle-utilities-plugin.notification-group"
+                       displayType="BALLOON"/>
+  </extensions>
+
+  <actions>
+    <group id="dev.turingcomplete.intellij-gradle-utilities-plugin.actions" text="Gradle Utilities"
+           icon="AllIcons.General.ExternalTools"
+           popup="true">
+      <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.show-running-gradle-daemons"
+              class="dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon.ManageRunningGradleDaemonsAction"/>
+
+
+      <group id="dev.turingcomplete.intellij-gradle-utilities-plugin.actions.manage-gradle-user-home"
+             icon="AllIcons.Nodes.HomeFolder"
+             text="Manage Gradle User Home" popup="true">
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.clear-gradle-caches"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.ClearGradleCachesAction"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.manage-gradle-wrapper-distributions"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradlewrapperdistribution.ManageGradleWrapperDistributionsAction"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.manage-gradle-daemon-caches"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradledaemoncache.ManageGradleDaemonCachesAction"/>
+      </group>
+
+      <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.show-gradle-environment"
+              class="dev.turingcomplete.intellijgradleutilitiesplugin.gradleenvironment.CollectGradleEnvironmentInformationAction"/>
+
+      <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.verify-gradle-wrapper-jar"
+              class="dev.turingcomplete.intellijgradleutilitiesplugin.verification.VerifyGradleFilesAction"/>
+
+      <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.edit-user-gradle-properties"
+              class="dev.turingcomplete.intellijgradleutilitiesplugin.other.EditUserGradlePropertiesAction"/>
+
+      <separator/>
+
+      <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.find-latest-gradle-releases"
+              class="dev.turingcomplete.intellijgradleutilitiesplugin.latestgradlereleases.FindLatestGradleReleasesAction"/>
+
+      <group id="dev.turingcomplete.intellij-gradle-utilities-plugin.actions.links" icon="AllIcons.General.Web"
+             text="Links" popup="true">
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-user-manual"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleUserManual"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-user-manual-cli"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleUserManualCommandLineInterface"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-user-manual-groovy-dsl-reference"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleUserManualGroovyDslReference"/>
+
+        <separator/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-release-notes"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleReleaseNotes"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-plugins"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradlePlugins"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-blog"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleBlog"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.gradle-forums"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GradleForums"/>
+
+        <separator/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.link.github-gradle"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GitHubGradle"/>
+      </group>
+
+      <add-to-group group-id="Gradle.View.ActionsToolbar.LeftPanel"/>
+    </group>
+  </actions>
+
+</idea-plugin>
