@@ -31,9 +31,9 @@ open class ManageRunningGradleDaemonsAction
   override fun onSuccess(result: List<GradleDaemon>?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Running Gradle Daemons",
-                                    RunningGradleDaemonsPanel(),
-                                    Dimension(400, 350),
-                                    executionContext.project)
+                               { RunningGradleDaemonsPanel() },
+                               Dimension(400, 350),
+                               executionContext.project)
     }
   }
 

@@ -23,7 +23,7 @@ class ManageGradleDaemonCachesAction
   override fun onSuccess(result: Void?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Manage Gradle Daemon Caches",
-                               GradleDaemonCachesPanel(),
+                               { GradleDaemonCachesPanel() },
                                Dimension(400, 350),
                                executionContext.project)
     }

@@ -13,7 +13,7 @@ import kotlin.streams.toList
 abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
                                         private val progressText: String,
                                         description: @NlsActions.ActionDescription String? = null)
-  : GradleUtilityAction<List<Directory>>(title, description, AllIcons.Actions.Refresh) {
+  : GradleUtilityAction<List<Directory>>(title, description, AllIcons.Actions.Refresh, executionMode = ExecutionMode.MODAL) {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
@@ -27,7 +27,7 @@ abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
 
   abstract fun parentDirectory(): Path
 
-  open fun filter(path: Path) : Boolean = true
+  open fun filter(path: Path): Boolean = true
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     if (!Files.exists(parentDirectory())) {
@@ -43,7 +43,7 @@ abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
                 val size = if (calculateSize) {
                   progressIndicator.text2 = "Calculating size of: ${it.fileName}..."
                   val sizeResult = FileUtils.sizeOfDirectory(it.toFile())
-                  progressIndicator.text = ""
+                  progressIndicator.text2 = ""
                   sizeResult
                 }
                 else {

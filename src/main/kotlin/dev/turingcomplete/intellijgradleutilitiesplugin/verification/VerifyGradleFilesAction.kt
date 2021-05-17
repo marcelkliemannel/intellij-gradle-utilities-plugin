@@ -147,11 +147,13 @@ class VerifyGradleFilesAction
 
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Gradle Wrapper JAR and Distributions Verification Result",
-                               ScrollPaneFactory.createScrollPane(VerificationResultPanel(result),
-                                                                  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                                  ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
-                                 border = JBUI.Borders.empty()
-                                 viewportBorder = JBUI.Borders.empty()
+                               {
+                                 ScrollPaneFactory.createScrollPane(VerificationResultPanel(result),
+                                                                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
+                                   border = JBUI.Borders.empty()
+                                   viewportBorder = JBUI.Borders.empty()
+                                 }
                                },
                                Dimension(700, 500),
                                executionContext.project)
@@ -160,7 +162,7 @@ class VerifyGradleFilesAction
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
 
-  protected fun calculateChecksumOfGradleFile(progressIndicator: ProgressIndicator, gradleFile: Path): String {
+  private fun calculateChecksumOfGradleFile(progressIndicator: ProgressIndicator, gradleFile: Path): String {
     progressIndicator.checkCanceled()
     progressIndicator.text2 = "Calculating checksum of: ${gradleFile.fileName}..."
     return FileInputStream(gradleFile.toFile()).use { DigestUtils.sha256Hex(it) }

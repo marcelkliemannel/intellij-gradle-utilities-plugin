@@ -82,10 +82,6 @@ class RunningGradleDaemonsPanel
   private inner class CollectDaemonStatusToggleAction
     : DumbAwareToggleAction("Collect Daemon Status", null, AllIcons.General.ShowInfos) {
 
-    override fun update(e: AnActionEvent) {
-      e.presentation.isEnabled = actionOnEntriesEnabled()
-    }
-
     override fun isSelected(e: AnActionEvent): Boolean = determineDaemonStatusSelected
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {

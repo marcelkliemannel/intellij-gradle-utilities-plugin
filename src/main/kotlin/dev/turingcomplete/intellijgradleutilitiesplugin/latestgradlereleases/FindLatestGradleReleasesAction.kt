@@ -11,7 +11,6 @@ import com.intellij.ui.ScrollPaneFactory
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleWrapperAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
-import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.UiUtils
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
@@ -69,9 +68,9 @@ class FindLatestGradleReleasesAction
     result as Pair<List<GradleRelease>, List<GradleRelease>>
 
     GradleUtilityDialog.show("Latest Gradle Releases",
-                                  ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result.first, result.second), true),
-                                  Dimension(720, 500),
-                                  executionContext.project)
+                             { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result.first, result.second), true) },
+                             Dimension(720, 500),
+                             executionContext.project)
   }
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
