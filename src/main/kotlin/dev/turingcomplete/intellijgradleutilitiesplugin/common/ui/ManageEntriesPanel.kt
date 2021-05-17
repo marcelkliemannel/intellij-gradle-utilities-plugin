@@ -136,9 +136,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
               tableModel.entries = result ?: throw IllegalStateException("snh: Result not set")
             }
             .onFinished {
-              ApplicationManager.getApplication().invokeLater {
-                syncGui()
-              }
+              syncGui()
             }
   }
 
