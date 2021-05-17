@@ -7,10 +7,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.EdtReplacementThread
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.EmptyProgressIndicator
-import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageDialogBuilder
@@ -27,13 +24,19 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
                                       description: @NlsActions.ActionDescription String? = null,
                                       icon: Icon? = null,
                                       private val canBeCancelled: Boolean = true,
-                                      private val executionMode: ExecutionMode = ExecutionMode.BACKGROUND)
+                                      private val executionMode: ExecutionMode = ExecutionMode.BACKGROUND,
+                                      private val performInBackgroundOption: PerformInBackgroundOption = getDefaultPerformInBackgroundOption(executionMode))
   : AnAction(null, description, icon), DumbAware {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
     private val LOGGER = Logger.getInstance(GradleUtilityAction::class.java)
+
+    private fun getDefaultPerformInBackgroundOption(executionMode: ExecutionMode) = when (executionMode) {
+      ExecutionMode.BACKGROUND -> PerformInBackgroundOption.ALWAYS_BACKGROUND
+      else -> PerformInBackgroundOption.DEAF
+    }
   }
 
   // -- Variables --------------------------------------------------------------------------------------------------- //
@@ -88,8 +91,8 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
     onBeforeStart.forEach { it() }
 
     when (executionMode) {
-      ExecutionMode.BACKGROUND -> BackgroundTask(canBeCancelled, this, executionContext).queue()
-      ExecutionMode.MODAL -> ModalTask(canBeCancelled, this, executionContext).queue()
+      ExecutionMode.BACKGROUND -> BackgroundTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
+      ExecutionMode.MODAL -> ModalTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
       ExecutionMode.DIRECT -> {
         try {
           runAction(executionContext, EmptyProgressIndicator())
@@ -235,8 +238,9 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
   @Suppress("UnstableApiUsage")
   private class BackgroundTask(canBeCancelled: Boolean,
                                private val parentAction: GradleUtilityAction<*>,
-                               private val executionContext: ExecutionContext)
-    : Task.Backgroundable(executionContext.project, executionContext.title, canBeCancelled) {
+                               private val executionContext: ExecutionContext,
+                               performInBackgroundOption: PerformInBackgroundOption)
+    : Task.Backgroundable(executionContext.project, executionContext.title, canBeCancelled, performInBackgroundOption) {
 
     override fun run(progressIndicator: ProgressIndicator) {
       parentAction.runAction(executionContext, progressIndicator)
@@ -265,8 +269,9 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
 
   private class ModalTask(canBeCancelled: Boolean,
                           private val parentAction: GradleUtilityAction<*>,
-                          private val executionContext: ExecutionContext)
-    : Task.Modal(executionContext.project, executionContext.title, canBeCancelled) {
+                          private val executionContext: ExecutionContext,
+                          performInBackgroundOption: PerformInBackgroundOption)
+    : Task.ConditionalModal(executionContext.project, executionContext.title, canBeCancelled, performInBackgroundOption) {
 
     override fun run(progressIndicator: ProgressIndicator) {
       parentAction.runAction(executionContext, progressIndicator)
