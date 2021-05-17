@@ -12,7 +12,8 @@ import java.nio.file.Path
 class CollectRunningGradleDaemonsAction
   : GradleUtilityAction<List<GradleDaemon>>("Collect Running Gradle Daemons",
                                             "Collects all running Gradle daemons.",
-                                            AllIcons.Actions.Refresh) {
+                                            AllIcons.Actions.Refresh,
+                                            executionMode = ExecutionMode.MODAL) {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 

@@ -23,9 +23,9 @@ class ManageGradleWrapperDistributionsAction
   override fun onSuccess(result: Void?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Manage Gradle Wrapper Distributions",
-                                    GradleWrapperDistributionsPanel(),
-                                    Dimension(400, 350),
-                                    executionContext.project)
+                               { GradleWrapperDistributionsPanel() },
+                               Dimension(400, 350),
+                               executionContext.project)
     }
   }
 

@@ -113,10 +113,6 @@ abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directo
   private inner class CalculateSizeToggleAction
     : DumbAwareToggleAction("Calculate Size", null, AllIcons.Debugger.EvaluateExpression) {
 
-    override fun update(e: AnActionEvent) {
-      e.presentation.isEnabled = actionOnEntriesEnabled()
-    }
-
     override fun isSelected(e: AnActionEvent): Boolean = calculateSizeSelected
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {

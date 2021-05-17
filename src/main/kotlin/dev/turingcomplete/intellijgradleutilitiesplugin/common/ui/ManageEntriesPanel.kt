@@ -26,7 +26,8 @@ import kotlin.properties.Delegates
  */
 abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
                                      private val collectEntriesAction: GradleUtilityAction<List<E>>,
-                                     private val statusTextNoEntries: String): BorderLayoutPanel(), DataProvider {
+                                     private val statusTextNoEntries: String)
+  : BorderLayoutPanel(), DataProvider, GradleUtilityDialog.DialogHandler {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
   // -- Properties -------------------------------------------------------------------------------------------------- //
@@ -47,15 +48,10 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       setContent(ScrollPaneFactory.createScrollPane(table, true))
     })
 
-    collectEntries()
-
     syncGui()
   }
 
-  /**
-   * Overriders must call super method!
-   */
-  override final fun getData(dataId: String): Any? {
+  final override fun getData(dataId: String): Any? {
     return when {
       PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId) -> this
       else -> doGetData(dataId)
@@ -91,8 +87,8 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     return table.selectedRows.map { runningGradleDaemons[it] }.toCollection(mutableListOf())
   }
 
-  protected fun actionOnEntriesEnabled(): Boolean {
-    return if (collectEntriesAction.isInExecution()) false else tableModel.entries.isNotEmpty()
+  override fun onDialogShow() {
+    collectEntries()
   }
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
@@ -122,6 +118,10 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     }
 
     return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, actionGroup, true).component
+  }
+
+  private fun actionOnEntriesEnabled(): Boolean {
+    return if (collectEntriesAction.isInExecution()) false else tableModel.entries.isNotEmpty()
   }
 
   private fun initCollectEntriesAction() {

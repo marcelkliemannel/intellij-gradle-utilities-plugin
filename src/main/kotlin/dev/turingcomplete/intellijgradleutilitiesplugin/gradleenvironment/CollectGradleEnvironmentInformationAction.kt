@@ -61,11 +61,13 @@ class CollectGradleEnvironmentInformationAction
 
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Gradle Environment",
-                               ScrollPaneFactory.createScrollPane(GradleEnvironmentPanel(result),
-                                                                  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                                  ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
-                                 border = JBUI.Borders.empty()
-                                 viewportBorder = JBUI.Borders.empty()
+                               {
+                                 ScrollPaneFactory.createScrollPane(GradleEnvironmentPanel(result),
+                                                                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
+                                   border = JBUI.Borders.empty()
+                                   viewportBorder = JBUI.Borders.empty()
+                                 }
                                },
                                Dimension(650, 500),
                                executionContext.project)
