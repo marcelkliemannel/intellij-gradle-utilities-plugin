@@ -7,6 +7,7 @@ import com.intellij.openapi.fileEditor.impl.NonProjectFileWritingAccessProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.NlsActions
 import com.intellij.util.castSafelyTo
+import com.intellij.util.io.delete
 import java.io.IOException
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
@@ -67,8 +68,7 @@ open class DeleteDirectoriesAction(overrideTitle: @NlsActions.ActionText String?
           override fun postVisitDirectory(dir: Path, exc: IOException?): FileVisitResult {
             progressIndicator.checkCanceled()
             progressIndicator.text2 = directory.relativize(dir).toString()
-            // todo
-//            dir.delete()
+            dir.delete(true)
             return FileVisitResult.CONTINUE
           }
         })

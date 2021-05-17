@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "dev.turingcomplete"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
   mavenCentral()
@@ -32,7 +32,7 @@ changelog {
 
 tasks {
   patchPluginXml {
-    changeNotes(closure { changelog.getUnreleased().toHTML() })
+    changeNotes(closure { changelog.get(project.version as String).toHTML() })
   }
 }
 
