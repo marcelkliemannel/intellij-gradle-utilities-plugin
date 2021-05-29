@@ -128,6 +128,10 @@ object GradleUtils {
     }
   }
 
+  fun isChecksumVerificationConfigured(gradleWrapperProperties: List<Pair<String, String>>) : Boolean {
+    return gradleWrapperProperties.any { it.first == "distributionSha256Sum" }
+  }
+
   // -- Private Methods --------------------------------------------------------------------------------------------- //
 
   /**

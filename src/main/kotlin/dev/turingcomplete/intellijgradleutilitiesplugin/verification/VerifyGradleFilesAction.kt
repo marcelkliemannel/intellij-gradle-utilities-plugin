@@ -88,12 +88,18 @@ class VerifyGradleFilesAction
       val sha256FileName = "gradle-$gradleWrapperVersion-wrapper.jar.sha256"
       val expectedChecksum = requestChecksumForGradleFile(progressIndicator, sha256FileName)
 
+      val warnings = mutableListOf<VerificationResult.Warning>()
+      val readGradleWrapperProperties = readGradleWrapperProperties(projectDir, progressIndicator, handleError)
+      if (!GradleUtils.isChecksumVerificationConfigured(readGradleWrapperProperties)) {
+        warnings.add(VerificationResult.Warning("Checksum verification not configured.", "https://docs.gradle.org/current/userguide/gradle_wrapper.html#configuring_checksum_verification"))
+      }
 
       return VerificationResult.File(gradleWrapperJar.toNioPath(), "Project Gradle Wrapper JAR",
                                      actualChecksum, expectedChecksum,
                                      "$DISTRIBUTIONS_BASE_URL$sha256FileName",
                                      "The SHA-256 checksum of the Gradle wrapper JAR matches the expected one for the version $gradleWrapperVersion.",
-                                     "The SHA-256 checksum of the Gradle wrapper JAR does not match the expected one for the version $gradleWrapperVersion.")
+                                     "The SHA-256 checksum of the Gradle wrapper JAR does not match the expected one for the version $gradleWrapperVersion.",
+                                     warnings)
     }
     catch (e: Exception) {
       handleError("Failed to verify Gradle wrapper JAR.", e)

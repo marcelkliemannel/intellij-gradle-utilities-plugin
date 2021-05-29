@@ -8,8 +8,8 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
+import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
-import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleWrapperAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.HttpGet
@@ -20,7 +20,7 @@ import java.awt.Dimension
 import java.util.*
 
 class FindLatestGradleReleasesAction
-  : GradleWrapperAction<Pair<List<GradleRelease>, List<GradleRelease>>>("Find the Latest Gradle Releases",
+  : GradleUtilityAction<Pair<List<GradleRelease>, List<GradleRelease>>>("Find the Latest Gradle Releases",
                                                                         "Finds the latest Gradle releases.") {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //

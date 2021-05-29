@@ -32,6 +32,7 @@ import java.nio.file.Path
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTable
+import javax.swing.SwingConstants
 import javax.swing.table.AbstractTableModel
 import javax.swing.table.TableCellRenderer
 
@@ -130,10 +131,19 @@ class GradleEnvironmentPanel(private val gradleEnvironment: GradleEnvironment) :
       }
       else {
         add(JBLabel("Version:"), bag.nextLine().next())
-        add(JBLabel(gradlewWrapper.version ?: "Unknown").copyable(), bag.next().weightx(1.0).fillCellHorizontally().overrideLeftInset(4))
+        add(JBLabel(gradlewWrapper.version ?: "Unknown").copyable(), bag.next().weightx(1.0).fillCellHorizontally().coverLine().overrideLeftInset(4))
 
         add(JBLabel("Checksum:"), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
-        add(JBLabel(gradlewWrapper.checksum ?: "Unknown").copyable(), bag.next().weightx(1.0).fillCellHorizontally().overrideLeftInset(4).overrideTopInset(UIUtil.DEFAULT_VGAP))
+        add(JBLabel(gradlewWrapper.checksum ?: "Unknown").copyable(), bag.next().weightx(1.0).fillCellHorizontally().coverLine().overrideLeftInset(4).overrideTopInset(UIUtil.DEFAULT_VGAP))
+
+        if (gradlewWrapper.checksumVerificationConfigured) {
+          add(JBLabel("Checksum verification configured.", AllIcons.General.InspectionsOK, SwingConstants.LEFT), bag.nextLine().next().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
+          add(UiUtils.createLink("Learn more", "https://docs.gradle.org/current/userguide/gradle_wrapper.html#configuring_checksum_verification"), bag.next().overrideLeftInset(2).overrideTopInset(UIUtil.DEFAULT_VGAP))
+        }
+        else {
+          add(JBLabel("Checksum verification not configured.", AllIcons.General.Warning, SwingConstants.LEFT), bag.nextLine().next().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
+          add(UiUtils.createLink("Learn more", "https://docs.gradle.org/current/userguide/gradle_wrapper.html#configuring_checksum_verification"), bag.next().overrideLeftInset(2).overrideTopInset(UIUtil.DEFAULT_VGAP))
+        }
 
         add(JBLabel("Gradle wrapper properties:"), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.DEFAULT_VGAP))
         add(createPropertiesTable(gradlewWrapper.wrapperProperties, listOf("Key", "Value"), "No Gradle wrapper proeprties"), bag.nextLine().next().coverLine().weighty(0.4).fillCell().overrideTopInset(2))
