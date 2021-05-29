@@ -1,8 +1,11 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.execution.process.ProcessInfo
+import java.time.Instant
 
-data class GradleDaemon(val processInfo: ProcessInfo, val status: String?) {
+class GradleDaemon(processInfo: ProcessInfo,
+                   processHandle: ProcessHandle?,
+                   val status: String?) {
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
@@ -11,14 +14,20 @@ data class GradleDaemon(val processInfo: ProcessInfo, val status: String?) {
 
   // -- Variables --------------------------------------------------------------------------------------------------- //
 
-  val version : String? = parseVersion()
+  val pid = processInfo.pid.toLong()
+  val commandLine = processInfo.commandLine
+  val uptimeMillis: Long? = processHandle?.info()?.startInstant()?.map {
+    Instant.now().toEpochMilli() - it.toEpochMilli()
+  }?.orElse(null)
+
+  val version: String? = parseVersion()
 
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
   // -- Private Methods --------------------------------------------------------------------------------------------- //
 
   private fun parseVersion(): String? {
-    return VERSION_GRADLE_LAUNCHER_JAR_REGEX.find(processInfo.commandLine)?.groupValues?.get(1)
+    return VERSION_GRADLE_LAUNCHER_JAR_REGEX.find(commandLine)?.groupValues?.get(1)
   }
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //

@@ -5,6 +5,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.util.containers.orNull
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 import java.nio.file.Path
@@ -64,7 +65,8 @@ class CollectRunningGradleDaemonsAction
         GradleUtils.determineGradleDaemonStatus(workingDir, gradleExecutable)
                 .forEach { (pid, status) ->
                   if (gradleDaemonProcesses.containsKey(pid)) {
-                    gradleDaemons[pid] = GradleDaemon(gradleDaemonProcesses[pid]!!, status)
+                    val processHandle = ProcessHandle.of(pid.toLong()).orNull()
+                    gradleDaemons[pid] = GradleDaemon(gradleDaemonProcesses[pid]!!, processHandle, status)
                   }
                 }
       }
@@ -74,7 +76,8 @@ class CollectRunningGradleDaemonsAction
     // Add reaming Gradle Daemons, which have an unknown status
     gradleDaemonProcesses.filter { !gradleDaemons.containsKey(it.key) }
             .forEach {
-              gradleDaemons[it.key] = GradleDaemon(it.value, null)
+              val processHandle = ProcessHandle.of(it.value.pid.toLong()).orNull()
+              gradleDaemons[it.key] = GradleDaemon(it.value, processHandle, null)
             }
 
     result(gradleDaemons.values.toList())

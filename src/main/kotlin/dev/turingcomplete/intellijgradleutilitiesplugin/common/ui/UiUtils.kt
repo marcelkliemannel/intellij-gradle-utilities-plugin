@@ -37,7 +37,7 @@ internal object UiUtils {
           .setDefaultFill(GridBagConstraints.NONE)
 
   fun createCopyButton(value: () -> String): JLabel {
-    return object: JLabel(AllIcons.Actions.Copy) {
+    return object : JLabel(AllIcons.Actions.Copy) {
 
       init {
         object : ClickListener() {
@@ -64,10 +64,10 @@ internal object UiUtils {
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
-  
+
   object Table {
-    fun createContextMenuMouseListener(actionGroup: () -> ActionGroup?) : MouseAdapter {
-      return object: MouseAdapter() {
+    fun createContextMenuMouseListener(actionGroup: () -> ActionGroup?): MouseAdapter {
+      return object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
           handleMouseEvent(e)
         }
@@ -101,7 +101,7 @@ internal object UiUtils {
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  object Component {
+  object Panel {
     class TextAreaPanel(value: String) : BorderLayoutPanel() {
 
       init {

@@ -35,7 +35,7 @@ class OpenGradleDaemonLogAction
     gradleDaemon.version ?: return
 
     val gradleHome = GradleUtils.gradleUserHome()
-    val logFile =  gradleHome.resolve(Path.of("daemon", gradleDaemon.version, "daemon-${gradleDaemon.processInfo.pid}.out.log"))
+    val logFile =  gradleHome.resolve(Path.of("daemon", gradleDaemon.version, "daemon-${gradleDaemon.pid}.out.log"))
     val daemonLogFile = VirtualFileManager.getInstance().findFileByNioPath(logFile)
                         ?: throw GradleUtilityActionFailedException("Couldn't find Gradle daemon log file: $logFile")
 

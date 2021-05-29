@@ -32,7 +32,7 @@ open class ManageRunningGradleDaemonsAction
     ApplicationManager.getApplication().invokeLater {
       GradleUtilityDialog.show("Running Gradle Daemons",
                                { RunningGradleDaemonsPanel() },
-                               Dimension(400, 350),
+                               Dimension(500, 350),
                                executionContext.project)
     }
   }

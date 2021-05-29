@@ -275,7 +275,7 @@ class GradleEnvironmentPanel(private val gradleEnvironment: GradleEnvironment) :
       }
 
       val selectedProperty = selectedProperties[0]
-      val valueTextAreaPanel = UiUtils.Component.TextAreaPanel(selectedProperty.second ?: "")
+      val valueTextAreaPanel = UiUtils.Panel.TextAreaPanel(selectedProperty.second ?: "")
 
       JBPopupFactory.getInstance()
               .createComponentPopupBuilder(valueTextAreaPanel, valueTextAreaPanel)
