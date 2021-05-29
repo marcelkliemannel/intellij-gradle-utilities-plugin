@@ -4,14 +4,12 @@ import com.intellij.openapi.actionSystem.DataProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.Dimension
-import javax.swing.Action
 import javax.swing.JComponent
 
 class GradleUtilityDialog private constructor(title: String,
                                               project: Project?,
                                               private val createComponent: () -> JComponent,
-                                              size: Dimension)
-  : DialogWrapper(project), DataProvider {
+                                              size: Dimension) : DialogWrapper(project), DataProvider {
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
@@ -44,10 +42,6 @@ class GradleUtilityDialog private constructor(title: String,
     }
 
     super.show()
-  }
-
-  override fun getCancelAction(): Action {
-    return super.getCancelAction()
   }
 
   override fun getData(dataId: String) : Any? {

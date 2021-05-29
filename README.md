@@ -1,6 +1,6 @@
 # IntelliJ Gradle Utilities Plugin
 
-<img src="src/main/resources/META-INF/pluginIcon.svg" alt="Plugin Logo" width="10%"/>
+<img src="src/main/resources/META-INF/pluginIcon.svg" alt="Plugin Logo" width="120px"/>
 
 This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. [**It's available on the official IntelliJ plugin marketplace**](https://plugins.jetbrains.com/plugin/16800-gradle-utilities).
 
@@ -10,13 +10,13 @@ This IntelliJ plugin provides some useful utilities to support the daily work wi
 
 The utilities are available in the toolbar of the Gradle tool window (select *View | Tool Windows | Gradle*) under the *Gradle Utilities* action popup button:
 
-<img src="screenshots/main-menu.png" alt="Main Menu" width="50%"/>
+<img src="screenshots/main-menu.png" alt="Main Menu" width="499px"/>
 
 ### Manage Running Gradle Daemons
 
 Lists all running Gradle daemons with their status. The daemons can easily be terminated, or their command line can be viewed.
 
-<img src="screenshots/manage-gradle-daemons.png" alt="Manage Running Gradle Daemons" width="45%"/>
+<img src="screenshots/manage-gradle-daemons.png" alt="Manage Running Gradle Daemons" width="500px"/>
 
 ### Manage Gradle Home
 
@@ -28,25 +28,25 @@ Clears the whole Gradle caches. This includes all downloaded dependencies and Gr
 
 Lists all downloaded Gradle wrapper distributions and their sizes on the disk, which can be easily deleted.
 
-<img src="screenshots/manage-distributions.png" alt="Manage Gradle Wrapper Distributions" width="45%"/>
+<img src="screenshots/manage-distributions.png" alt="Manage Gradle Wrapper Distributions" width="400px"/>
 
 #### Manage Gradle Daemons Caches
 
 Lists all Gradle daemon caches and their sizes on the disk, which can be easily deleted.
 
-<img src="screenshots/manage-daemons-caches.png" alt="Manage Gradle Daemons Caches" width="45%"/>
+<img src="screenshots/manage-daemons-caches.png" alt="Manage Gradle Daemons Caches" width="400px"/>
 
 ### Collect Gradle Environment Information
 
 Collects information about the current Gradle environment, like relevant paths, versions, user/project Gradle properties and environment variables.
 
-<img src="screenshots/gradle-environment-information.png" alt="Collect Gradle Environment Information" width="60%"/>
+<img src="screenshots/gradle-environment-information.png" alt="Collect Gradle Environment Information" width="650px"/>
 
 ### Find the Latest Gradle Releases
 
 Finds the latest Gradle releases (productive and pre releases) and provides useful links, like the release notes.
 
-<img src="screenshots/latest-gradle-releases.png" alt="Find the Latest Gradle Releases" width="70%"/>
+<img src="screenshots/latest-gradle-releases.png" alt="Find the Latest Gradle Releases" width="720px"/>
 
 ### Other
 

@@ -60,18 +60,23 @@ class VerificationResultPanel(verificationResult: VerificationResult) : JPanel(G
 
       val fileNameText = "<html><b>${fileVerificationResult.file.fileName}</b></html>"
       if (fileVerificationResult.actualChecksum == fileVerificationResult.expectedChecksum) {
-        add(JBLabel(fileNameText, AllIcons.General.InspectionsOK, SwingConstants.LEFT), bag.nextLine().next())
-        add(JBLabel(fileVerificationResult.matchingMessage), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
-        add(JBLabel("Checksum: ${fileVerificationResult.actualChecksum}").copyable(), bag.nextLine().next().overrideTopInset(UIUtil.LARGE_VGAP))
+        add(JBLabel(fileNameText, AllIcons.General.InspectionsOK, SwingConstants.LEFT), bag.nextLine().coverLine().next())
+        add(JBLabel(fileVerificationResult.matchingMessage), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.DEFAULT_VGAP))
+        add(JBLabel("Checksum: ${fileVerificationResult.actualChecksum}").copyable(), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.LARGE_VGAP))
       }
       else {
-        add(JBLabel(fileNameText, AllIcons.Ide.FatalError, SwingConstants.LEFT), bag.nextLine().next())
-        add(JBLabel(fileVerificationResult.errorMessage), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
-        add(JBLabel("Expected: ${fileVerificationResult.expectedChecksum}").copyable(), bag.nextLine().next().overrideTopInset(UIUtil.LARGE_VGAP))
-        add(JBLabel("Actual: ${fileVerificationResult.actualChecksum}").copyable(), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
+        add(JBLabel(fileNameText, AllIcons.Ide.FatalError, SwingConstants.LEFT), bag.nextLine().next().coverLine())
+        add(JBLabel(fileVerificationResult.errorMessage), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.DEFAULT_VGAP))
+        add(JBLabel("Expected: ${fileVerificationResult.expectedChecksum}").copyable(), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.LARGE_VGAP))
+        add(JBLabel("Actual: ${fileVerificationResult.actualChecksum}").copyable(), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.DEFAULT_VGAP))
       }
 
-      add(UiUtils.createLink("Official checksum file", fileVerificationResult.checksumFileUrl), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
+      add(UiUtils.createLink("Official checksum file", fileVerificationResult.checksumFileUrl), bag.nextLine().next().coverLine().overrideTopInset(UIUtil.DEFAULT_VGAP))
+
+      fileVerificationResult.warnings.forEach { warning ->
+        add(JBLabel(warning.text, AllIcons.General.Warning, SwingConstants.LEFT), bag.nextLine().next().overrideTopInset(UIUtil.DEFAULT_VGAP))
+        add(UiUtils.createLink("Learn more", warning.learnMoreLink), bag.next().overrideLeftInset(2).overrideTopInset(UIUtil.DEFAULT_VGAP))
+      }
     }
   }
 

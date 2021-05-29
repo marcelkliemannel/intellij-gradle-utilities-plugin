@@ -1,23 +1,17 @@
-package dev.turingcomplete.intellijgradleutilitiesplugin.verification
+package dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome
 
-import java.nio.file.Path
+import com.intellij.openapi.actionSystem.DataContext
+import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
+import dev.turingcomplete.intellijgradleutilitiesplugin.common.OpenDirectoryAction
 
-class VerificationResult(val fileVerificationResults: List<File>, val errors: List<String>) {
+class OpenGradleUserHome : OpenDirectoryAction() {
   // -- Companion Object -------------------------------------------------------------------------------------------- //
   // -- Properties -------------------------------------------------------------------------------------------------- //
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun directory(dataContext: DataContext) = GradleUtils.gradleUserHome()
+
   // -- Private Methods --------------------------------------------------------------------------------------------- //
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
-
-  class File(val file: Path,
-             val title: String,
-             val actualChecksum: String,
-             val expectedChecksum: String,
-             val checksumFileUrl: String,
-             val matchingMessage: String = "The SHA-256 checksum of the file matches the expected one.",
-             val errorMessage: String = "The SHA-256 checksum of the file does not match the expected one.",
-             val warnings: List<Warning> = listOf())
-
-  class Warning(val text: String, val learnMoreLink: String)
 }

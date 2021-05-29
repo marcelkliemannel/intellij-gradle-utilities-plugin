@@ -1,13 +1,12 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome
 
-import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.DumbAwareToggleAction
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.DataProvider
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBEmptyBorder
 import com.intellij.util.ui.JBUI
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.*
-import dev.turingcomplete.intellijgradleutilitiesplugin.common.CommonDataKeys
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.ManageEntriesPanel
 import org.apache.commons.io.FileUtils
 import javax.swing.SwingConstants
@@ -90,7 +89,7 @@ abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directo
                        "Do you want to proceed?"
   })
 
-  override fun createSettingsActions(): List<ToggleAction> = listOf(CalculateSizeToggleAction())
+  override fun createSettings(): List<Setting> = listOf(CalculateSizeSetting())
 
   override fun tableContextMenuActions(): ActionGroup? = contextMenuAction
 
@@ -110,14 +109,14 @@ abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directo
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  private inner class CalculateSizeToggleAction
-    : DumbAwareToggleAction("Calculate Size", null, AllIcons.Debugger.EvaluateExpression) {
+  private inner class CalculateSizeSetting : Setting("Calculate size") {
 
-    override fun isSelected(e: AnActionEvent): Boolean = calculateSizeSelected
+    override fun isSelected(): Boolean = calculateSizeSelected
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-      calculateSizeSelected = !calculateSizeSelected
-      if (calculateSizeSelected) {
+    override fun setSelected(selected: Boolean) {
+      val oldState = calculateSizeSelected
+      calculateSizeSelected = selected
+      if (calculateSizeSelected && oldState != calculateSizeSelected) {
         collectEntries()
       }
     }

@@ -26,14 +26,14 @@ class ShowGradleDaemonCommandLineAction
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val gradleDaemon = RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(executionContext.dataContext) ?: throw IllegalStateException("snh: Missing data")
 
-    val commandLineText = gradleDaemon.processInfo.commandLine.replace(" -", " \\\n -")
-    val commandLineTextAreaPanel = UiUtils.Component.TextAreaPanel(commandLineText)
+    val commandLineText = gradleDaemon.commandLine.replace(" -", " \\\n -")
+    val commandLineTextAreaPanel = UiUtils.Panel.TextAreaPanel(commandLineText)
 
     ApplicationManager.getApplication().invokeLater {
       JBPopupFactory.getInstance()
               .createComponentPopupBuilder(commandLineTextAreaPanel, commandLineTextAreaPanel)
               .setRequestFocus(true)
-              .setTitle("Command Line of Gradle Daemon With PID ${gradleDaemon.processInfo.pid}")
+              .setTitle("Command Line of Gradle Daemon With PID ${gradleDaemon.pid}")
               .setFocusable(true)
               .setResizable(true)
               .setMovable(true)
