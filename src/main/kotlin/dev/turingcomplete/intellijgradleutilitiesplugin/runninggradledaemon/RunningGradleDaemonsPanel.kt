@@ -87,10 +87,10 @@ class RunningGradleDaemonsPanel
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
   private inner class CollectDaemonStatusSetting
-    : Setting("Collect daemon statuses",
+    : Setting("Collect daemon status",
               "Collects the status of the daemons by parsing the output of the --status Gradle command. " +
               "For that the Gradle wrapper from the project and the system Gradle installation will be executed " +
-              "(than these are present).<br /><br />" +
+              "(if these are available).<br /><br />" +
               "Because of the slow Gradle cold start, collecting the statuses may take a moment.") {
 
     override fun isSelected(): Boolean = determineDaemonStatusSelected

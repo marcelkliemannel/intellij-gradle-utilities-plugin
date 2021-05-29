@@ -176,7 +176,6 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       settings.forEach { setting ->
         val settingCheckBox = JBCheckBox(setting.text, setting.isSelected())
         settingCheckBox.addActionListener { it ->
-          println(it)
           setting.setSelected(settingCheckBox.isSelected)
         }
         val component = if (setting.description != null) {

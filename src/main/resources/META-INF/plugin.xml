@@ -58,6 +58,9 @@
 
         <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.manage-gradle-daemon-caches"
                 class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradledaemoncache.ManageGradleDaemonCachesAction"/>
+
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.open"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.OpenGradleUserHome"/>
       </group>
 
       <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.show-gradle-environment"

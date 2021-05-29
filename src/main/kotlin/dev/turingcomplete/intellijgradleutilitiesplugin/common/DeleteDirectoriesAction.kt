@@ -47,12 +47,6 @@ open class DeleteDirectoriesAction(overrideTitle: @NlsActions.ActionText String?
 
   final override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val directories = directories(executionContext.dataContext)
-    if (directories.isEmpty()) {
-      println("dfadfasdfasdfasf")
-    }
-    else {
-      println(directories.size)
-    }
     directories.asSequence().map { it.path }.forEach { directory ->
       if (!Files.exists(directory)) {
         LOG.info("Directory '$directory' not deleted because it does not exists.")
