@@ -10,7 +10,7 @@
 ### Fixed
 ## [1.2.0] - 2021-05-29
 ### Added
-- Add action to open Gradle home (GitHub issue #11). 
+- Add action to open Gradle user home (GitHub issue #11). 
 - Check if Gradle wrapper JAR checksum verification is configured (GitHub issue #9).
 - Collect running Gradle daemons improvements (GitHub issue #7):
     - Show uptime of Gradle daemons.
