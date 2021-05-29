@@ -18,6 +18,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
+      - uses: burrunan/gradle-cache-action@v1
 
       - name: Verify Plugin
         run: ./gradlew verifyPlugin
