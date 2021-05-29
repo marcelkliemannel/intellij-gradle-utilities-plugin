@@ -40,7 +40,7 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     gradleDaemons(executionContext.dataContext).forEach { gradleDaemon ->
       progressIndicator.checkCanceled()
       try {
-        progressIndicator.text = "Terminating Gradle daemon with PID ${gradleDaemon.processInfo.pid}..."
+        progressIndicator.text = "Terminating Gradle daemon with PID ${gradleDaemon.pid}..."
         terminate(gradleDaemon, progressIndicator)
       }
       catch (e: Exception) {
@@ -73,17 +73,17 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     override fun icon(): Icon = AllIcons.Actions.Suspend
 
     override fun errorMessage(gradleDaemon: GradleDaemon, error: Exception): String {
-      return "Failed to gracefully terminate Gradle daemon with PID ${gradleDaemon.processInfo.pid}: ${error.message}"
+      return "Failed to gracefully terminate Gradle daemon with PID ${gradleDaemon.pid}: ${error.message}"
     }
 
     override fun terminate(gradleDaemon: GradleDaemon, progressIndicator: ProgressIndicator) {
-      val pid = gradleDaemon.processInfo.pid
+      val pid = gradleDaemon.pid
 
       val message = "Gracefully terminate Gradle daemon with PID $pid."
       progressIndicator.text2 = message
       LOG.info(message)
 
-      OSProcessUtil.terminateProcessGracefully(pid)
+      OSProcessUtil.terminateProcessGracefully(pid.toInt())
     }
   }
 
@@ -112,17 +112,17 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     override fun icon(): Icon = AllIcons.Debugger.KillProcess
 
     override fun errorMessage(gradleDaemon: GradleDaemon, error: Exception): String {
-      return "Failed to kill Gradle daemon with PID ${gradleDaemon.processInfo.pid}: ${error.message}"
+      return "Failed to kill Gradle daemon with PID ${gradleDaemon.pid}: ${error.message}"
     }
 
     override fun terminate(gradleDaemon: GradleDaemon, progressIndicator: ProgressIndicator) {
-      val pid = gradleDaemon.processInfo.pid
+      val pid = gradleDaemon.pid
 
       val message = "Kill Gradle daemon with PID $pid."
       progressIndicator.text2 = message
       LOG.info(message)
 
-      OSProcessUtil.killProcess(pid)
+      OSProcessUtil.killProcess(pid.toInt())
     }
   }
 
