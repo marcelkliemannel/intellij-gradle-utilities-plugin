@@ -2,14 +2,19 @@
 
 ## [Unreleased]
 ### Added
-- GitHub issue #7: Collect running Gradle daemons improvements:
-    - Show uptime of Gradle daemons.
-    - Provide a detailed description for collecting the statuses.
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+## [1.2.0] - 2021-05-29
+### Added
+- GitHub issue #9: Check if Gradle wrapper JAR checksum verification is configured.
+- GitHub issue #7: Collect running Gradle daemons improvements:
+    - Show uptime of Gradle daemons.
+    - Provide a detailed description for collecting the statuses.
+
 ## [1.1.0] - 2021-05-17
 ### Added
 - GitHub issue #4: Actions are now cancelable if they were started from a dialog.

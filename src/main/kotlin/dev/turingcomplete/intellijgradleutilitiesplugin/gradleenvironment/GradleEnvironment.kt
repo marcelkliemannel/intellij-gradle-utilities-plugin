@@ -24,7 +24,10 @@ class GradleEnvironment(val gradleWrapper: GradleWrapper?,
   // -- Private Methods --------------------------------------------------------------------------------------------- //
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  class GradleWrapper(val version: String?, val checksum: String?, val wrapperProperties: List<Pair<String, String>>)
+  class GradleWrapper(val version: String?,
+                      val checksum: String?,
+                      val wrapperProperties: List<Pair<String, String>>,
+                      val checksumVerificationConfigured: Boolean)
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 

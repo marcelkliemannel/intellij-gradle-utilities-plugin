@@ -16,5 +16,8 @@ class VerificationResult(val fileVerificationResults: List<File>, val errors: Li
              val expectedChecksum: String,
              val checksumFileUrl: String,
              val matchingMessage: String = "The SHA-256 checksum of the file matches the expected one.",
-             val errorMessage: String = "The SHA-256 checksum of the file does not match the expected one.")
+             val errorMessage: String = "The SHA-256 checksum of the file does not match the expected one.",
+             val warnings: List<Warning> = listOf())
+
+  class Warning(val text: String, val learnMoreLink: String)
 }
