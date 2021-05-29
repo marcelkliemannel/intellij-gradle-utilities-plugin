@@ -3,8 +3,10 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.common.ui
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.ui.panel.ComponentPanelBuilder
 import com.intellij.ui.JBColor
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBUI
@@ -13,7 +15,9 @@ import com.intellij.util.ui.components.BorderLayoutPanel
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.UiUtils.Table.formatCell
 import java.awt.Component
+import java.awt.GridBagLayout
 import javax.swing.JComponent
+import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.table.AbstractTableModel
 import javax.swing.table.TableCellRenderer
@@ -32,7 +36,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
   // -- Companion Object -------------------------------------------------------------------------------------------- //
   // -- Properties -------------------------------------------------------------------------------------------------- //
 
-  private val toolbar : JComponent by lazy { createToolbar() }
+  private val toolbar: JComponent by lazy { createToolbar() }
   private val tableModel = ManageEntriesModel(columns)
   protected val table = ManageEntriesTable(tableModel)
 
@@ -48,6 +52,12 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       setContent(ScrollPaneFactory.createScrollPane(table, true))
     })
 
+
+    val settings = createSettings()
+    if (settings.isNotEmpty()) {
+      addToBottom(createSettingsComponent(settings))
+    }
+
     syncGui()
   }
 
@@ -60,11 +70,11 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
 
   open fun doGetData(dataId: String): Any? = null
 
-  abstract fun statusTextCollectingEntries() : Pair<String, String?>
+  abstract fun statusTextCollectingEntries(): Pair<String, String?>
 
   protected open fun createManageAllEntriesActions(): List<GradleUtilityAction<*>> = listOf()
 
-  protected open fun createSettingsActions(): List<ToggleAction> = listOf()
+  protected open fun createSettings(): List<Setting> = listOf()
 
   /**
    * The method is called every time the context menu is opened.
@@ -107,13 +117,6 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
                   .onFailure { collectEntries() }
           add(it)
         }
-      }
-
-      val settingsActions = createSettingsActions()
-      if (settingsActions.isNotEmpty()) {
-        addSeparator()
-
-        settingsActions.forEach { add(it) }
       }
     }
 
@@ -167,9 +170,38 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     repaint()
   }
 
+  private fun createSettingsComponent(settings: List<Setting>): JPanel {
+    return JPanel(GridBagLayout()).apply {
+      val bag = UiUtils.createDefaultGridBag()
+      settings.forEach { setting ->
+        val settingCheckBox = JBCheckBox(setting.text, setting.isSelected())
+        settingCheckBox.addActionListener { it ->
+          println(it)
+          setting.setSelected(settingCheckBox.isSelected)
+        }
+        val component = if (setting.description != null) {
+          ComponentPanelBuilder(settingCheckBox).withTooltip(setting.description).createPanel()
+        }
+        else {
+          settingCheckBox
+        }
+        add(component, bag.nextLine().next().weightx(1.0).fillCellHorizontally().overrideTopInset(UIUtil.DEFAULT_VGAP))
+      }
+    }
+  }
+
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
   class Column<E>(val title: String, val value: (E) -> String?)
+
+  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+
+  protected abstract class Setting(val text: String, val description: String? = null) {
+
+    abstract fun isSelected(): Boolean
+
+    abstract fun setSelected(selected: Boolean)
+  }
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 

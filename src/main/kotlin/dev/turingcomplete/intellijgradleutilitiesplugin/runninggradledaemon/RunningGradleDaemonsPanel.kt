@@ -1,8 +1,9 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
-import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.DumbAwareToggleAction
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.util.text.StringUtil
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.ManageEntriesPanel
 
 class RunningGradleDaemonsPanel
@@ -13,9 +14,14 @@ class RunningGradleDaemonsPanel
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
-    private val COLUMNS = listOf<Column<GradleDaemon>>(Column("PID") { it.processInfo.pid.toString() },
+    private val COLUMNS = listOf<Column<GradleDaemon>>(Column("PID") { it.pid.toString() },
                                                        Column("Version") { it.version },
-                                                       Column("Status") { it.status })
+                                                       Column("Status") { it.status },
+                                                       Column("Uptime") { formatUptime(it.uptimeMillis) })
+
+    private fun formatUptime(uptimeMillis: Long?): String {
+      return uptimeMillis?.let { StringUtil.formatDuration(it) } ?: "Unknown"
+    }
 
     val ALL_DAEMONS: DataKey<List<GradleDaemon>> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.AllDaemons")
     val SELECTED_DAEMONS: DataKey<List<GradleDaemon>> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.SelectedDaemons")
@@ -30,7 +36,8 @@ class RunningGradleDaemonsPanel
   // -- Initialization ---------------------------------------------------------------------------------------------- //
 
   init {
-    table.columnModel.getColumn(1).preferredWidth = 250
+    table.columnModel.getColumn(1).preferredWidth = 180
+    table.columnModel.getColumn(3).preferredWidth = 180
 
     init()
   }
@@ -61,7 +68,7 @@ class RunningGradleDaemonsPanel
     }
   }
 
-  override fun createSettingsActions(): List<ToggleAction> = listOf(CollectDaemonStatusToggleAction())
+  override fun createSettings(): List<Setting> = listOf(CollectDaemonStatusSetting())
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
 
@@ -79,14 +86,19 @@ class RunningGradleDaemonsPanel
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  private inner class CollectDaemonStatusToggleAction
-    : DumbAwareToggleAction("Collect Daemon Status", null, AllIcons.General.ShowInfos) {
+  private inner class CollectDaemonStatusSetting
+    : Setting("Collect daemon statuses",
+              "Collects the status of the daemons by parsing the output of the --status Gradle command. " +
+              "For that the Gradle wrapper from the project and the system Gradle installation will be executed " +
+              "(than these are present).<br /><br />" +
+              "Because of the slow Gradle cold start, collecting the statuses may take a moment.") {
 
-    override fun isSelected(e: AnActionEvent): Boolean = determineDaemonStatusSelected
+    override fun isSelected(): Boolean = determineDaemonStatusSelected
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-      determineDaemonStatusSelected = !determineDaemonStatusSelected
-      if (determineDaemonStatusSelected) {
+    override fun setSelected(selected: Boolean) {
+      val oldState = determineDaemonStatusSelected
+      determineDaemonStatusSelected = selected
+      if (determineDaemonStatusSelected && oldState != determineDaemonStatusSelected) {
         collectEntries()
       }
     }

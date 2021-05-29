@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 ### Added
-
+- GitHub issue #7: Collect running Gradle daemons improvements:
+    - Show uptime of Gradle daemons.
+    - Provide a detailed description for collecting the statuses.
 ### Changed
 
 ### Removed
