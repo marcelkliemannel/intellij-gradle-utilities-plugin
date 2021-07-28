@@ -14,8 +14,9 @@ import javax.swing.SwingConstants
 abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directory>>,
                                                     collectEntriesAction: GradleUtilityAction<List<Directory>>,
                                                     private val statusTextCollectingEntries: String,
-                                                    statusTextNoEntries: String)
-  : ManageEntriesPanel<Directory>(columns.plus(SIZE_COLUMN), collectEntriesAction, statusTextNoEntries), DataProvider {
+                                                    statusTextNoEntries: String,
+                                                    toolbarPlace: String)
+  : ManageEntriesPanel<Directory>(columns.plus(SIZE_COLUMN), collectEntriesAction, statusTextNoEntries, toolbarPlace), DataProvider {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 

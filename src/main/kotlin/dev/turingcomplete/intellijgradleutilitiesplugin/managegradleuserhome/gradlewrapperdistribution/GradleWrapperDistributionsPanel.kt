@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradlewrapperdistribution
 
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.Directory
+import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilitiesPluginUtils
 import dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.ManageGradleUserHomeDirectoriesPanel
 import java.nio.file.Path
 
@@ -8,7 +9,8 @@ class GradleWrapperDistributionsPanel
   : ManageGradleUserHomeDirectoriesPanel(COLUMNS,
                                          CollectWrapperGradleDistributionsAction(),
                                          "Collecting Gradle wrapper distributions...",
-                                         "No Gradle wrapper distributions") {
+                                         "No Gradle wrapper distributions",
+                                         "${GradleUtilitiesPluginUtils.TOOLBAR_PLACE_PREFIX}.gradlewrapperdistributions") {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 

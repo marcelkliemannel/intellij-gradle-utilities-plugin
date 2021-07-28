@@ -4,7 +4,7 @@
   <vendor email="dev@marcelkliemannel.com" url="https://www.marcelkliemannel.com/project/intellij-gradle-utilities-plugin">Marcel Kliemannel</vendor>
 
   <description><![CDATA[
-  <p>Provides some useful utilities to support the daily work with Gradle:</p>
+  <p>This plugin provides some useful utilities to support the daily work with Gradle:</p>
   <ul>
     <li>List all running Gradle daemons with their status. The daemons can easily be terminated, or their command line can be viewed.</li>
     <li>Manage Gradle home:

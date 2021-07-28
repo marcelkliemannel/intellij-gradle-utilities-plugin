@@ -8,6 +8,10 @@
 ### Removed
 
 ### Fixed
+## [1.2.1] - 2021-07-28
+### Fixed
+- Fix compatibility with IntelliJ 2021.2
+
 ## [1.2.0] - 2021-05-29
 ### Added
 - Add action to open Gradle user home (GitHub issue #11). 

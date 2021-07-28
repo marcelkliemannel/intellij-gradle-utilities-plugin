@@ -4,12 +4,14 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.util.text.StringUtil
+import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilitiesPluginUtils
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.ManageEntriesPanel
 
 class RunningGradleDaemonsPanel
   : ManageEntriesPanel<GradleDaemon>(COLUMNS,
                                      CollectRunningGradleDaemonsAction(),
-                                     "No running Gradle daemons") {
+                                     "No running Gradle daemons",
+                                     "${GradleUtilitiesPluginUtils.TOOLBAR_PLACE_PREFIX}.runninggradledaemons") {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 

@@ -2,7 +2,9 @@
 
 <img src="src/main/resources/META-INF/pluginIcon.svg" alt="Plugin Logo" width="120px"/>
 
-This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. [**It's available on the official IntelliJ plugin marketplace**](https://plugins.jetbrains.com/plugin/16800-gradle-utilities).
+This IntelliJ plugin provides some useful utilities to support the daily work with Gradle. 
+
+[**It's available on the official IntelliJ plugin marketplace**](https://plugins.jetbrains.com/plugin/16800-gradle-utilities).
 
 (This plugin has no relation to the official Gradle project.)
 
