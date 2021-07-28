@@ -30,13 +30,14 @@ import kotlin.properties.Delegates
  */
 abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
                                      private val collectEntriesAction: GradleUtilityAction<List<E>>,
-                                     private val statusTextNoEntries: String)
+                                     private val statusTextNoEntries: String,
+                                     private val toolbarPlace: String)
   : BorderLayoutPanel(), DataProvider, GradleUtilityDialog.DialogHandler {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
   // -- Properties -------------------------------------------------------------------------------------------------- //
 
-  private val toolbar: JComponent by lazy { createToolbar() }
+  private val toolbar: JComponent by lazy { createToolbar(toolbarPlace) }
   private val tableModel = ManageEntriesModel(columns)
   protected val table = ManageEntriesTable(tableModel)
 
@@ -103,7 +104,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
 
-  private fun createToolbar(): JComponent {
+  private fun createToolbar(toolbarPlace: String): JComponent {
     val actionGroup = DefaultActionGroup().apply {
       add(collectEntriesAction)
 
@@ -120,7 +121,10 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       }
     }
 
-    return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, actionGroup, true).component
+    return ActionManager.getInstance().createActionToolbar(toolbarPlace, actionGroup, true).run {
+      setTargetComponent(this@ManageEntriesPanel)
+      component
+    }
   }
 
   private fun actionOnEntriesEnabled(): Boolean {
