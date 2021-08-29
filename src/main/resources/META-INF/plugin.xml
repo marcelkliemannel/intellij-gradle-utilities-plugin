@@ -6,17 +6,17 @@
   <description><![CDATA[
   <p>This plugin provides some useful utilities to support the daily work with Gradle:</p>
   <ul>
-    <li>List all running Gradle daemons with their status. The daemons can easily be terminated, or their command line can be viewed.</li>
+    <li>Lists all running Gradle daemons with their status. Additionally, actions to terminate daemons or viewing their command lines are available.</li>
     <li>Manage Gradle home:
       <ul>
-        <li>Clear the whole Gradle caches. This includes all downloaded dependencies and Gradle daemon caches.</li>
-        <li>List all downloaded Gradle wrapper distributions and their sizes on the disk, which can be easily deleted.</li>
-        <li>List all Gradle daemon caches and their sizes on the disk, which can be easily deleted.</li>
+        <li>Clear all Gradle caches. This includes all downloaded dependencies and Gradle daemon caches..</li>
+        <li>List all downloaded Gradle wrapper distributions and their sizes on the disk and offer an action to delete them.</li>
+        <li>List all Gradle daemon caches and their sizes on the disk and offer an action to delete them.</li>
       </ul>
     </li>
-    <li>Collect information about the current Gradle environment, like relevant paths, versions, user/project Gradle properties and environment variables.</li>
+    <li>Collect information about the current Gradle environment, like relevant paths, versions, user/project Gradle properties, and environment variables.</li>
     <li>Verify Gradle wrapper JAR and distributions.</li>
-    <li>Edit user Gradle properties.</li>
+    <li>Edit the user Gradle properties file.</li>
     <li>Find the latest Gradle releases.</li>
     <li>Bookmarks to important Gradle related websites.</li>
   </ul>
