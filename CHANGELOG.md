@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 
+- Fix context menu is visible in the running daemons table even though there are no entries (GitHub issue #13)
 - Fix "Update Gradle Wrapper" command uses wrong version (GitHub issue #15)
 
 ## [1.2.1] - 2021-07-28

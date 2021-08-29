@@ -26,6 +26,7 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
 
   init {
     title = { _, e -> title(e.dataContext) }
+    isVisible = { e -> gradleDaemons(e.dataContext).isNotEmpty() }
   }
 
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
