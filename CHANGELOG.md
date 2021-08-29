@@ -1,6 +1,14 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+## [1.2.2] - 2021-08-29
 ### Fixed
 
 - Fix context menu is visible in the running daemons table even though there are no entries (GitHub issue #13)
