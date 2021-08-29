@@ -23,7 +23,6 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JLabel
 import javax.swing.JTable
-import javax.swing.JToolTip
 import javax.swing.UIManager
 
 internal object UiUtils {
@@ -36,7 +35,7 @@ internal object UiUtils {
           .setDefaultInsets(0, 0, 0, 0)
           .setDefaultFill(GridBagConstraints.NONE)
 
-  fun createCopyButton(value: () -> String): JLabel {
+  fun createCopyToClipboardButton(value: () -> String): JLabel {
     return object : JLabel(AllIcons.Actions.Copy) {
 
       init {
@@ -46,12 +45,8 @@ internal object UiUtils {
             return true
           }
         }.installOn(this)
-      }
 
-      override fun createToolTip(): JToolTip {
-        return JToolTip().apply {
-          toolTipText = "Copy"
-        }
+        toolTipText = "Copy to Clipboard"
       }
     }
   }

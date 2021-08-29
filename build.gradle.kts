@@ -17,6 +17,13 @@ repositories {
   mavenCentral()
 }
 
+dependencies {
+  val jUnitVersion = "5.7.1"
+  testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
+  testImplementation("org.junit.jupiter:junit-jupiter-params:$jUnitVersion")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
 intellij {
   version.set(properties("platformVersion"))
   type.set(properties("platformType"))
