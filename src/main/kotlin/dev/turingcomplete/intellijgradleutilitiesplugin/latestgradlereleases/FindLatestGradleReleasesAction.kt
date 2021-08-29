@@ -1,11 +1,8 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.latestgradlereleases
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
@@ -16,20 +13,20 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
+import org.jetbrains.annotations.TestOnly
 import java.awt.Dimension
 import java.util.*
 
 class FindLatestGradleReleasesAction
-  : GradleUtilityAction<Pair<List<GradleRelease>, List<GradleRelease>>>("Find the Latest Gradle Releases",
-                                                                        "Finds the latest Gradle releases.") {
+  : GradleUtilityAction<LatestGradleReleases>("Find the Latest Gradle Releases",
+                                              "Finds the latest Gradle releases.") {
 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
-    private val LOG = Logger.getInstance(FindLatestGradleReleasesAction::class.java)
-
     private val GIT_HUB_API_HEADER = BasicHeader("Accept", "application/vnd.github.v3+json")
-    private val GRADLE_RELEASE_VERSION_REGEX = Regex("^(?<major>\\d+)(?:.(?<minor>\\d+))?(?:.(?<patch>\\d+))?(?:\\s+(?<preRelease>.+))?\$")
+    @TestOnly
+    val GRADLE_RELEASE_NAME_VERSION_REGEX = Regex("^(?<major>\\d+)(?:.(?<minor>\\d+))?(?:.(?<patch>\\d+))?(?:\\s+(?<preRelease>.+))?\$")
   }
 
   // -- Properties -------------------------------------------------------------------------------------------------- //
@@ -37,47 +34,37 @@ class FindLatestGradleReleasesAction
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
-    val latestProductiveGradleReleases = LinkedHashMap<Int, GradleRelease>()
-    val latestPreReleaseGradleReleases = LinkedHashMap<Int, GradleRelease>()
+    val latestProductiveGradleReleases = LinkedHashMap<Int, GradleGitHubRelease>()
+    val latestPreReleaseGradleReleases = LinkedHashMap<Int, GradleGitHubRelease>()
+    val errors = mutableListOf<String>()
 
-    requestLatestGradleGitHubReleases(progressIndicator).forEach { gradleRelease ->
-      val versionNameMatch = GRADLE_RELEASE_VERSION_REGEX.matchEntire(gradleRelease.name)
+    progressIndicator.text = "Requesting latest Gradle releases from GitHub..."
+    requestLatestGradleGitHubReleases().forEach { gitHubRelease ->
+      val versionNameMatch = GRADLE_RELEASE_NAME_VERSION_REGEX.matchEntire(gitHubRelease.name)
       if (versionNameMatch != null) {
         val major = versionNameMatch.groups["major"]!!.value.toInt()
-        if (gradleRelease.preRelease) {
-          latestPreReleaseGradleReleases.computeIfAbsent(major) {
-            GradleRelease(gradleRelease.name, gradleRelease.publishedAt, gradleRelease.tagName)
-          }
+        if (gitHubRelease.preRelease) {
+          latestPreReleaseGradleReleases.computeIfAbsent(major) { gitHubRelease }
         }
         else {
-          latestProductiveGradleReleases.computeIfAbsent(major) {
-            GradleRelease(gradleRelease.name, gradleRelease.publishedAt, gradleRelease.tagName)
-          }
+          latestProductiveGradleReleases.computeIfAbsent(major) { gitHubRelease }
         }
       }
       else {
-        LOG.warn("Failed to parse Gradle GitHub release version: ${gradleRelease.name}. Please report this " +
-                 "as a bug for the Gradle utilities plugin.")
+        errors.add("Failed to parse Gradle GitHub release version: ${gitHubRelease.name}")
       }
     }
 
-    result(Pair(latestProductiveGradleReleases.values.toList(), latestPreReleaseGradleReleases.values.toList()))
+    result(LatestGradleReleases(latestProductiveGradleReleases.values.toList(),
+                                latestPreReleaseGradleReleases.values.toList(),
+                                errors))
   }
 
-  override fun onSuccess(result: Pair<List<GradleRelease>, List<GradleRelease>>?, executionContext: ExecutionContext) {
-    result as Pair<List<GradleRelease>, List<GradleRelease>>
-
-    GradleUtilityDialog.show("Latest Gradle Releases",
-                             { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result.first, result.second), true) },
-                             Dimension(720, 500),
-                             executionContext.project)
-  }
-
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-
-  private fun requestLatestGradleGitHubReleases(progressIndicator: ProgressIndicator): Array<GitHubRelease> {
-    progressIndicator.text = "Requesting latest Gradle releases from GitHub..."
-
+  /**
+   * The returned list is ordered by the release date.
+   */
+  @TestOnly
+  fun requestLatestGradleGitHubReleases(): List<GradleGitHubRelease> {
     HttpClients.createDefault().use { httpclient ->
       val releasesGet = HttpGet("https://api.github.com/repos/gradle/gradle/releases?per_page=100").apply {
         addHeader(GIT_HUB_API_HEADER)
@@ -95,26 +82,24 @@ class FindLatestGradleReleasesAction
         val objectMapper = ObjectMapper()
                 .registerKotlinModule()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        val releases = objectMapper.readValue(responseEntity.content, Array<GitHubRelease>::class.java)
+        val releases = objectMapper.readValue(responseEntity.content, Array<GradleGitHubRelease>::class.java)
 
         EntityUtils.consume(responseEntity)
 
-        return releases
+        return releases.toList()
       }
     }
   }
 
+  override fun onSuccess(result: LatestGradleReleases?, executionContext: ExecutionContext) {
+    result as LatestGradleReleases
+
+    GradleUtilityDialog.show("Latest Gradle Releases",
+                             { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result), true) },
+                             Dimension(720, 500),
+                             executionContext.project)
+  }
+
+  // -- Private Methods --------------------------------------------------------------------------------------------- //
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
-
-  private class GitHubRelease(val name: String,
-
-                              @JsonProperty("prerelease")
-                              val preRelease: Boolean,
-
-                              @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'") // ISO 8601
-                              @JsonProperty("published_at")
-                              val publishedAt: Date,
-
-                              @JsonProperty("tag_name")
-                              val tagName: String)
 }

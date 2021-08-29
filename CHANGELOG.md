@@ -1,13 +1,10 @@
 # Changelog
 
 ## [Unreleased]
-### Added
-
-### Changed
-
-### Removed
-
 ### Fixed
+
+- Fix "Update Gradle Wrapper" command uses wrong version (GitHub issue #15)
+
 ## [1.2.1] - 2021-07-28
 ### Fixed
 - Fix compatibility with IntelliJ 2021.2
