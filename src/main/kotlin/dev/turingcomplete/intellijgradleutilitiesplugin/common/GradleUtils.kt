@@ -97,7 +97,7 @@ object GradleUtils {
     }
   }
 
-  fun determineGradleDaemonStatus(workingDir: Path?, gradleExecutable: Path): Map<Int, String> {
+  fun determineGradleDaemonStatus(workingDir: Path?, gradleExecutable: Path): Map<Long, String> {
     var process: Process? = null
     try {
       process = ProcessBuilder().apply {
@@ -106,14 +106,12 @@ object GradleUtils {
         redirectErrorStream(true)
       }.start()
 
-      val gradleDaemonStatus = process.inputStream.bufferedReader().use { it.readText() }.lineSequence()
+      val gradleDaemonStatus = process.inputStream.bufferedReader()
+              .use { it.readText() }
+              .lineSequence()
               .mapNotNull {
-                val groups = GRADLE_DAEMON_STATUS_REGEX.find(it)?.groups
-                if (groups != null) {
-                  groups["pid"]!!.value.toInt() to groups["status"]!!.value
-                }
-                else {
-                  null
+                GRADLE_DAEMON_STATUS_REGEX.find(it)?.groups?.let { groups ->
+                  groups["pid"]!!.value.toLong() to groups["status"]!!.value
                 }
               }
               .toMap()
