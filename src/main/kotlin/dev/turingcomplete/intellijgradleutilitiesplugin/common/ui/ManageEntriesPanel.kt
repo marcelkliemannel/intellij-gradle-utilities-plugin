@@ -217,7 +217,9 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
   protected inner class ManageEntriesTable(tableModel: TableModel) : JBTable(tableModel) {
 
     init {
-      addMouseListener(UiUtils.Table.createContextMenuMouseListener { tableContextMenuActions() })
+      addMouseListener(UiUtils.Table.createContextMenuMouseListener(this@ManageEntriesPanel::class.qualifiedName!!) {
+        tableContextMenuActions()
+      })
 
       setDefaultRenderer(Object::class.java, object : JBLabel(), TableCellRenderer {
         override fun getTableCellRendererComponent(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {

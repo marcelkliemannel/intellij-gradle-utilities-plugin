@@ -61,7 +61,7 @@ internal object UiUtils {
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
   object Table {
-    fun createContextMenuMouseListener(actionGroup: () -> ActionGroup?): MouseAdapter {
+    fun createContextMenuMouseListener(place: String, actionGroup: () -> ActionGroup?): MouseAdapter {
       return object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
           handleMouseEvent(e)
@@ -75,7 +75,7 @@ internal object UiUtils {
           if (e is MouseEvent && e.isPopupTrigger) {
             actionGroup()?.let {
               ActionManager.getInstance()
-                      .createActionPopupMenu(ActionPlaces.UNKNOWN, it).component
+                      .createActionPopupMenu(place, it).component
                       .show(e.getComponent(), e.x, e.y)
             }
           }

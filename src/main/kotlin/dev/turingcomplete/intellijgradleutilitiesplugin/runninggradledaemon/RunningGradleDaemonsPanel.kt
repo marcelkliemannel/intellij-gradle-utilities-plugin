@@ -47,7 +47,7 @@ class RunningGradleDaemonsPanel
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
 
   override fun createManageAllEntriesActions() = listOf(TerminateGradleDaemonsAction.GracefullyAll(),
-                                                        TerminateGradleDaemonsAction.KillAll())
+                                                        TerminateGradleDaemonsAction.ForciblyTerminateAll())
 
   override fun tableContextMenuActions(): ActionGroup = contextMenuActions
 
@@ -77,7 +77,7 @@ class RunningGradleDaemonsPanel
   private fun createContextMenuActions(): ActionGroup {
     return DefaultActionGroup().apply {
       add(TerminateGradleDaemonsAction.GracefullySelected().onSuccess { collectEntries() })
-      add(TerminateGradleDaemonsAction.KillSelected().onSuccess { collectEntries() })
+      add(TerminateGradleDaemonsAction.ForciblyTerminateSelected().onSuccess { collectEntries() })
 
       addSeparator()
 

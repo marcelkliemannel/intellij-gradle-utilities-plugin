@@ -2,9 +2,8 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.util.containers.orNull
 import java.time.Instant
-import kotlin.streams.asSequence
 
-class GradleDaemon(processInfo: ProcessHandle, val status: String?) {
+class GradleDaemon(private val processInfo: ProcessHandle, val status: String?) {
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
@@ -28,6 +27,15 @@ class GradleDaemon(processInfo: ProcessHandle, val status: String?) {
   }
 
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
+
+  fun terminateForcibly() {
+    processInfo.destroyForcibly()
+  }
+
+  fun terminateGracefully() {
+    processInfo.destroy()
+  }
+
   // -- Private Methods --------------------------------------------------------------------------------------------- //
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 }
