@@ -56,6 +56,12 @@ tasks {
     channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
   }
 
+  /*
+  runPluginVerifier {
+    ideVersions.set(listOf("IU-213.5744.125", "IU-212.5457.46", "IU-213.5744.18"))
+  }
+  */
+
   signPlugin {
     certificateChain.set("""
 -----BEGIN CERTIFICATE-----
