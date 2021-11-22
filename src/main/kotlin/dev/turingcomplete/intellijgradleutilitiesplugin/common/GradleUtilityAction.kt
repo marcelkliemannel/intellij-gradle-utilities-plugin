@@ -41,7 +41,7 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
 
   // -- Variables --------------------------------------------------------------------------------------------------- //
 
-  var title: (Boolean, AnActionEvent) -> String = { isExecutionTitle, e ->
+  var title: (Boolean, AnActionEvent) -> String = { isExecutionTitle, _ ->
     "$initialTitle${if (!isExecutionTitle && (showOpensDialogIndicatorOnButtonText || confirmationText != null)) "..." else ""}"
   }
   var showOpensDialogIndicatorOnButtonText: Boolean = true
@@ -124,7 +124,7 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
 
   fun execute(dataContextComponent: JComponent?, presentation: Presentation? = templatePresentation) {
     val dataContext = DataManager.getInstance().getDataContext(dataContextComponent)
-    val actionEvent = AnActionEvent.createFromDataContext(ActionPlaces.UNKNOWN, presentation, dataContext)
+    val actionEvent = AnActionEvent.createFromDataContext(this::class.qualifiedName!!, presentation, dataContext)
     update(actionEvent)
     actionPerformed(actionEvent)
   }

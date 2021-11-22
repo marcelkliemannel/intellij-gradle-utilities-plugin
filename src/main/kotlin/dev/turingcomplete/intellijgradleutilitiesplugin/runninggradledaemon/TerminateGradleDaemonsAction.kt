@@ -1,6 +1,5 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
-import com.intellij.execution.process.OSProcessUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
@@ -78,13 +77,11 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     }
 
     override fun terminate(gradleDaemon: GradleDaemon, progressIndicator: ProgressIndicator) {
-      val pid = gradleDaemon.pid
-
-      val message = "Gracefully terminate Gradle daemon with PID $pid."
+      val message = "Gracefully terminating Gradle daemon with PID ${gradleDaemon.pid}."
       progressIndicator.text2 = message
       LOG.info(message)
 
-      OSProcessUtil.terminateProcessGracefully(pid.toInt())
+      gradleDaemon.terminateGracefully()
     }
   }
 
@@ -107,40 +104,38 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  abstract class KillTerminateGradleDaemonsAction(gradleDaemonsDataKey: DataKey<List<GradleDaemon>>)
+  abstract class ForciblyTerminateGradleDaemonsAction(gradleDaemonsDataKey: DataKey<List<GradleDaemon>>)
     : TerminateGradleDaemonsAction(gradleDaemonsDataKey) {
 
     override fun icon(): Icon = AllIcons.Debugger.KillProcess
 
     override fun errorMessage(gradleDaemon: GradleDaemon, error: Exception): String {
-      return "Failed to kill Gradle daemon with PID ${gradleDaemon.pid}: ${error.message}"
+      return "Failed to forcibly terminating Gradle daemon with PID ${gradleDaemon.pid}: ${error.message}"
     }
 
     override fun terminate(gradleDaemon: GradleDaemon, progressIndicator: ProgressIndicator) {
-      val pid = gradleDaemon.pid
-
-      val message = "Kill Gradle daemon with PID $pid."
+      val message = "Forcibly terminating Gradle daemon with PID ${gradleDaemon.pid}..."
       progressIndicator.text2 = message
       LOG.info(message)
 
-      OSProcessUtil.killProcess(pid.toInt())
+      gradleDaemon.terminateForcibly()
     }
   }
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  class KillAll : KillTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
+  class ForciblyTerminateAll : ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
 
-    override fun title(dataContext: DataContext): String = "Kill All Gradle Daemons"
+    override fun title(dataContext: DataContext): String = "Forcibly Terminate All Gradle Daemons"
   }
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  class KillSelected : KillTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
+  class ForciblyTerminateSelected : ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
 
     override fun title(dataContext: DataContext): String {
       val numOfDaemons = gradleDaemons(dataContext).size
-      return if (numOfDaemons == 1) "Kill Daemon" else "Kill $numOfDaemons Daemons"
+      return if (numOfDaemons == 1) "Forcibly Terminate Daemon" else "Forcibly Terminate $numOfDaemons Daemons"
     }
   }
 }

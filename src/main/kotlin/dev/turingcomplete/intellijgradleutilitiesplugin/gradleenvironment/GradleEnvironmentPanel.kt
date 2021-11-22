@@ -212,7 +212,9 @@ class GradleEnvironmentPanel(private val gradleEnvironment: GradleEnvironment) :
       })
 
       val contextMenuActions = DefaultActionGroup(CopyAction(singleDataName, pluralDataName), ExpandValue(singleDataName))
-      addMouseListener(UiUtils.Table.createContextMenuMouseListener { contextMenuActions })
+      addMouseListener(UiUtils.Table.createContextMenuMouseListener(this::class.qualifiedName!!) {
+        contextMenuActions 
+      })
 
       addFocusListener(object : FocusListener {
         override fun focusGained(e: FocusEvent?) {

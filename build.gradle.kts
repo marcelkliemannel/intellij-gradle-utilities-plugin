@@ -6,7 +6,7 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
   java
   kotlin("jvm") version "1.5.10"
-  id("org.jetbrains.intellij") version "1.1.4"
+  id("org.jetbrains.intellij") version "1.2.1"
   id("org.jetbrains.changelog") version "1.1.2"
 }
 
@@ -55,6 +55,12 @@ tasks {
     token.set("TOKEN")
     channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
   }
+
+  /*
+  runPluginVerifier {
+    ideVersions.set(listOf("IU-213.5744.125", "IU-212.5457.46", "IU-213.5744.18"))
+  }
+  */
 
   signPlugin {
     certificateChain.set("""

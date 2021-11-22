@@ -56,17 +56,14 @@ class CollectGradleEnvironmentInformationAction
     result as GradleEnvironment
 
     ApplicationManager.getApplication().invokeLater {
-      GradleUtilityDialog.show("Gradle Environment",
-                               {
-                                 ScrollPaneFactory.createScrollPane(GradleEnvironmentPanel(result),
-                                                                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
-                                   border = JBUI.Borders.empty()
-                                   viewportBorder = JBUI.Borders.empty()
-                                 }
-                               },
-                               Dimension(650, 500),
-                               executionContext.project)
+      GradleUtilityDialog.show("Gradle Environment", {
+        ScrollPaneFactory.createScrollPane(GradleEnvironmentPanel(result),
+                                           ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                           ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER).apply {
+          border = JBUI.Borders.empty()
+          viewportBorder = JBUI.Borders.empty()
+        }
+      }, Dimension(650, 500), executionContext.project)
     }
   }
 
@@ -126,7 +123,7 @@ class CollectGradleEnvironmentInformationAction
     }
   }
 
-  protected fun calculateGradleWrapperJarChecksum(progressIndicator: ProgressIndicator, gradleWrapperJar: VirtualFile): String {
+  private fun calculateGradleWrapperJarChecksum(progressIndicator: ProgressIndicator, gradleWrapperJar: VirtualFile): String {
     progressIndicator.checkCanceled()
     progressIndicator.text = "Calculating Gradle wrapper JAR checksum..."
     return FileInputStream(gradleWrapperJar.toNioPath().toFile()).use { DigestUtils.sha256Hex(it) }

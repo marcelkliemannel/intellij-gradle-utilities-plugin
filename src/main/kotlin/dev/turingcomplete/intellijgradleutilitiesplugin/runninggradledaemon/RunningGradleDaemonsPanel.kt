@@ -19,10 +19,10 @@ class RunningGradleDaemonsPanel
     private val COLUMNS = listOf<Column<GradleDaemon>>(Column("PID") { it.pid.toString() },
                                                        Column("Version") { it.version },
                                                        Column("Status") { it.status },
-                                                       Column("Uptime") { formatUptime(it.uptimeMillis) })
+                                                       Column("Uptime") { formatDuration(it.uptimeMillis) })
 
-    private fun formatUptime(uptimeMillis: Long?): String {
-      return uptimeMillis?.let { StringUtil.formatDuration(it) } ?: "Unknown"
+    private fun formatDuration(durationMillis: Long?): String {
+      return durationMillis?.let { StringUtil.formatDuration(it) } ?: "Unknown"
     }
 
     val ALL_DAEMONS: DataKey<List<GradleDaemon>> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.AllDaemons")
@@ -47,7 +47,7 @@ class RunningGradleDaemonsPanel
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
 
   override fun createManageAllEntriesActions() = listOf(TerminateGradleDaemonsAction.GracefullyAll(),
-                                                        TerminateGradleDaemonsAction.KillAll())
+                                                        TerminateGradleDaemonsAction.ForciblyTerminateAll())
 
   override fun tableContextMenuActions(): ActionGroup = contextMenuActions
 
@@ -77,7 +77,7 @@ class RunningGradleDaemonsPanel
   private fun createContextMenuActions(): ActionGroup {
     return DefaultActionGroup().apply {
       add(TerminateGradleDaemonsAction.GracefullySelected().onSuccess { collectEntries() })
-      add(TerminateGradleDaemonsAction.KillSelected().onSuccess { collectEntries() })
+      add(TerminateGradleDaemonsAction.ForciblyTerminateSelected().onSuccess { collectEntries() })
 
       addSeparator()
 

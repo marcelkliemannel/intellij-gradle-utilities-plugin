@@ -53,7 +53,6 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       setContent(ScrollPaneFactory.createScrollPane(table, true))
     })
 
-
     val settings = createSettings()
     if (settings.isNotEmpty()) {
       addToBottom(createSettingsComponent(settings))
@@ -113,9 +112,9 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
         addSeparator()
 
         manageAllEntriesActions.forEach {
-          it.apply { isEnabled = { actionOnEntriesEnabled() } }
-                  .onSuccess { collectEntries() }
-                  .onFailure { collectEntries() }
+          it.isEnabled = { actionOnEntriesEnabled() }
+          it.onSuccess { collectEntries() }
+          it.onFailure { collectEntries() }
           add(it)
         }
       }
@@ -135,16 +134,10 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     collectEntriesAction
             .onBeforeStart {
               tableModel.entries = listOf()
-              ApplicationManager.getApplication().invokeLater {
-                syncGui()
-              }
+              ApplicationManager.getApplication().invokeLater { syncGui() }
             }
-            .onSuccess { result ->
-              tableModel.entries = result ?: throw IllegalStateException("snh: Result not set")
-            }
-            .onFinished {
-              syncGui()
-            }
+            .onSuccess { result -> tableModel.entries = result ?: throw IllegalStateException("snh: Result not set") }
+            .onFinished { syncGui() }
   }
 
   private fun syncGui() {
@@ -179,9 +172,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       val bag = UiUtils.createDefaultGridBag()
       settings.forEach { setting ->
         val settingCheckBox = JBCheckBox(setting.text, setting.isSelected())
-        settingCheckBox.addActionListener { it ->
-          setting.setSelected(settingCheckBox.isSelected)
-        }
+        settingCheckBox.addActionListener { setting.setSelected(settingCheckBox.isSelected) }
         val component = if (setting.description != null) {
           ComponentPanelBuilder(settingCheckBox).withTooltip(setting.description).createPanel()
         }
@@ -226,7 +217,9 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
   protected inner class ManageEntriesTable(tableModel: TableModel) : JBTable(tableModel) {
 
     init {
-      addMouseListener(UiUtils.Table.createContextMenuMouseListener { tableContextMenuActions() })
+      addMouseListener(UiUtils.Table.createContextMenuMouseListener(this@ManageEntriesPanel::class.qualifiedName!!) {
+        tableContextMenuActions()
+      })
 
       setDefaultRenderer(Object::class.java, object : JBLabel(), TableCellRenderer {
         override fun getTableCellRendererComponent(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
