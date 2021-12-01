@@ -2,9 +2,9 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.guessProjectDir
-import com.intellij.util.containers.orNull
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 import java.nio.file.Path
@@ -20,6 +20,7 @@ class CollectRunningGradleDaemonsAction
 
   companion object {
     private const val GRADLE_DAEMON_CLASS = "org.gradle.launcher.daemon.bootstrap.GradleDaemon"
+    private val LOGGER = Logger.getInstance(GradleUtilityAction::class.java)
 
     val DETERMINE_DAEMON_STATUS: DataKey<Boolean> = DataKey.create("Gradle.Utilities.Plugin.CollectRunningGradleDaemonsAction.FindDaemonStatus")
   }
@@ -37,9 +38,19 @@ class CollectRunningGradleDaemonsAction
     // Collect processes
     progressIndicator.text = "Collecting Gradle daemon processes..."
 
-    val gradleDaemonProcesses: Map<Long, ProcessHandle> = ProcessHandle.allProcesses().asSequence().filter { process ->
-      process.info().commandLine().map { it.contains(GRADLE_DAEMON_CLASS) }.orElse(false)
-    }.associateBy { it.pid() }
+    val gradleDaemonProcesses: Map<Long, ProcessHandle> = ProcessHandle.allProcesses()
+            .asSequence()
+            .filter { process ->
+              return@filter try {
+                process.info().commandLine()
+                        .map { it.contains(GRADLE_DAEMON_CLASS) }
+                        .orElse(false)
+              }
+              catch (e: Exception) {
+                LOGGER.warn("Failed to read command line of process with PID ${process.pid()} to check if it is a Gradle daemon process.", e)
+                false
+              }
+            }.associateBy { it.pid() }
 
     val gradleDaemons = mutableMapOf<Long, GradleDaemon>()
 

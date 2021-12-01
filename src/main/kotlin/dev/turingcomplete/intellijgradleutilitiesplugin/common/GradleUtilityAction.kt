@@ -228,8 +228,8 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
                                                                            executionContext.project)
 
       FailureHandlingMode.AS_DIALOG -> Messages.showErrorDialog(executionContext.project,
-                                                                executionContext.failureTitle,
-                                                                displayMessage)
+                                                                displayMessage,
+                                                                executionContext.failureTitle)
     }
   }
 
