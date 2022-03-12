@@ -8,14 +8,23 @@
 ### Removed
 
 ### Fixed
-## [1.2.3] - 2021-11-22
+## [1.2.4] - 2022-03-12
 ### Added
 
 ### Changed
 
-- Fix incompatibilities with future IntelliJ releases
-
 ### Removed
+
+### Fixed
+
+- Actions error dialogs used message as title and title as message.
+- Don't fail "Manage Gradle Daemons" action if there is an I/O error during process collection.
+
+## [1.2.3] - 2021-11-22
+
+### Changed
+
+- Fix incompatibilities with future IntelliJ releases
 
 ### Fixed
 ## [1.2.2] - 2021-08-29
