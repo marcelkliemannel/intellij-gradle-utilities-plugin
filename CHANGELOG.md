@@ -8,6 +8,14 @@
 ### Removed
 
 ### Fixed
+## [1.2.4] - 2022-03-12
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
 
 - Actions error dialogs used message as title and title as message.
 - Don't fail "Manage Gradle Daemons" action if there is an I/O error during process collection.
