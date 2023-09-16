@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.other
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.progress.ProgressIndicator
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 
@@ -18,6 +19,8 @@ abstract class OpenWebsiteAction(linkTitle: String, private val url: String)
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     BrowserUtil.browse(url)

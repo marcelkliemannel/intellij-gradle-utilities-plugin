@@ -31,8 +31,6 @@
   <depends>com.intellij.gradle</depends>
   <depends>com.intellij.modules.platform</depends>
 
-  <idea-version since-build="211"/>
-
   <extensions defaultExtensionNs="com.intellij">
     <notificationGroup id="dev.turingcomplete.intellij-gradle-utilities-plugin.notification-group"
                        displayType="BALLOON"/>

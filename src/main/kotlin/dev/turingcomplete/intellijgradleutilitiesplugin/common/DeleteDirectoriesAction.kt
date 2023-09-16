@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.common
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.impl.NonProjectFileWritingAccessProvider
@@ -40,6 +41,8 @@ open class DeleteDirectoriesAction(overrideTitle: @NlsActions.ActionText String?
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   open fun directories(dataContext: DataContext): List<Directory> {
     return CommonDataKeys.SELECTED_DIRECTORIES.getData(dataContext)?.safeCastTo<List<Directory>>() ?: listOf()

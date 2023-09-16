@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.other
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -16,8 +17,8 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
-class EditUserGradlePropertiesAction()
-  : GradleUtilityAction<Void>("Edit User Gradle Properties",
+class EditUserGradlePropertiesAction
+    : GradleUtilityAction<Void>("Edit User Gradle Properties",
                               "Opens the user Gradle properties file in editor.",
                               executionMode = ExecutionMode.DIRECT), DumbAware {
 
@@ -35,6 +36,8 @@ class EditUserGradlePropertiesAction()
   }
 
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val project = CommonDataKeys.PROJECT.getData(executionContext.dataContext) ?: return

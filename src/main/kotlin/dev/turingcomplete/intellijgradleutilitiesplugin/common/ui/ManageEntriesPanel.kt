@@ -121,7 +121,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     }
 
     return ActionManager.getInstance().createActionToolbar(toolbarPlace, actionGroup, true).run {
-      setTargetComponent(this@ManageEntriesPanel)
+      targetComponent = this@ManageEntriesPanel
       component
     }
   }

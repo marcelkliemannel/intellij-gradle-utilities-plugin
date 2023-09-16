@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.progress.ProgressIndicator
@@ -28,6 +29,8 @@ class OpenGradleDaemonLogAction
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
 
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     executionContext.project ?: return
 
@@ -39,7 +42,6 @@ class OpenGradleDaemonLogAction
     val daemonLogFile = VirtualFileManager.getInstance().findFileByNioPath(logFile)
                         ?: throw GradleUtilityActionFailedException("Couldn't find Gradle daemon log file: $logFile")
 
-    @Suppress("UnstableApiUsage")
     ApplicationManager.getApplication().invokeLaterOnWriteThread {
       FileEditorManager.getInstance(executionContext.project).openFile(daemonLogFile, true)
     }

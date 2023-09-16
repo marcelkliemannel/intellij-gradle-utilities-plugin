@@ -3,6 +3,7 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.latestgradlereleases
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
@@ -32,6 +33,8 @@ class FindLatestGradleReleasesAction
   // -- Properties -------------------------------------------------------------------------------------------------- //
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val latestProductiveGradleReleases = LinkedHashMap<Int, GradleGitHubRelease>()

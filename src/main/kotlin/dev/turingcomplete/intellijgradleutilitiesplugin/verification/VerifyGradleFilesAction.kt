@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.verification
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -24,7 +25,7 @@ import kotlin.streams.asSequence
 
 
 class VerifyGradleFilesAction
-  : GradleWrapperAction<VerificationResult>("Verify Gradle wrapper JAR and distributions",
+  : GradleWrapperAction<VerificationResult>("Verify Gradle Wrapper JAR and Distributions",
                                             "Verifies the integrity of the project Gradle wrapper JAR and the " +
                                             "downloaded Gradle distributions by matching the SHA-256 checksums with " +
                                             "the official ones.") {
@@ -48,6 +49,8 @@ class VerifyGradleFilesAction
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
 

@@ -51,7 +51,6 @@ abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directo
             .onFinished { totalSizeLabel.isEnabled = true }
 
 
-    @Suppress("LeakingThis")
     addToBottom(JBUI.Panels.simplePanel(totalSizeLabel).apply {
       border = JBEmptyBorder(2, 0, 0, 0)
     })
@@ -117,7 +116,7 @@ abstract class ManageGradleUserHomeDirectoriesPanel(columns: List<Column<Directo
     override fun setSelected(selected: Boolean) {
       val oldState = calculateSizeSelected
       calculateSizeSelected = selected
-      if (calculateSizeSelected && oldState != calculateSizeSelected) {
+      if (calculateSizeSelected && !oldState) {
         collectEntries()
       }
     }

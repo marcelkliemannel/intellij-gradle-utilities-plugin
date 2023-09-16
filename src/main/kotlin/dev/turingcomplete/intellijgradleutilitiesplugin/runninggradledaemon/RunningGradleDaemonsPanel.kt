@@ -100,7 +100,7 @@ class RunningGradleDaemonsPanel
     override fun setSelected(selected: Boolean) {
       val oldState = determineDaemonStatusSelected
       determineDaemonStatusSelected = selected
-      if (determineDaemonStatusSelected && oldState != determineDaemonStatusSelected) {
+      if (determineDaemonStatusSelected && !oldState) {
         collectEntries()
       }
     }
