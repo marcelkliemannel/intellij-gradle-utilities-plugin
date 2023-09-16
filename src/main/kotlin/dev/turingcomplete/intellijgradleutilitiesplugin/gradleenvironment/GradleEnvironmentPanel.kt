@@ -4,10 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.BrowserUtil
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.idea.ActionsBundle
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKey
-import com.intellij.openapi.actionSystem.DataProvider
-import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -241,6 +238,8 @@ class GradleEnvironmentPanel(private val gradleEnvironment: GradleEnvironment) :
   private class CopyAction(private val singleDataName: String, private val pluralDataName: String)
     : DumbAwareAction("Copy Value", null, AllIcons.Actions.Copy) {
 
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
       val selectedProperties = PropertiesTable.SELECTED_PROPERTIES_DATA_KEY.getData(e.dataContext)
                                ?: throw IllegalStateException("snh: Data missing")
@@ -271,6 +270,8 @@ class GradleEnvironmentPanel(private val gradleEnvironment: GradleEnvironment) :
 
   private class ExpandValue(private val singleDataName: String)
     : DumbAwareAction("Expand Value", null, AllIcons.General.ExpandComponent) {
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
       val selectedProperties = PropertiesTable.SELECTED_PROPERTIES_DATA_KEY.getData(e.dataContext)

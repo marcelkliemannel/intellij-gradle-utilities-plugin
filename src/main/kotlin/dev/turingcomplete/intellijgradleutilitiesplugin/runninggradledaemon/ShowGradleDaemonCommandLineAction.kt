@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -22,6 +23,8 @@ class ShowGradleDaemonCommandLineAction
   }
 
   // -- Exported Methods -------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val gradleDaemon = RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(executionContext.dataContext) ?: throw IllegalStateException("snh: Missing data")

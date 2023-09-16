@@ -8,7 +8,6 @@ import com.intellij.util.io.isDirectory
 import org.apache.commons.io.FileUtils
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.streams.toList
 
 abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
                                         private val progressText: String,

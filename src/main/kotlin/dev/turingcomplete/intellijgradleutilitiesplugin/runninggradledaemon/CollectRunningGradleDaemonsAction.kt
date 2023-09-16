@@ -1,6 +1,7 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.runninggradledaemon
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
@@ -33,6 +34,8 @@ class CollectRunningGradleDaemonsAction
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     // Collect processes

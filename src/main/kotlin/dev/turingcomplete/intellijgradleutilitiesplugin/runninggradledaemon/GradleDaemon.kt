@@ -7,7 +7,7 @@ class GradleDaemon(private val processInfo: ProcessHandle, val status: String?) 
   // -- Companion Object -------------------------------------------------------------------------------------------- //
 
   companion object {
-    private val VERSION_GRADLE_LAUNCHER_JAR_REGEX = Regex("gradle-launcher-(?<version>.*).jar")
+    private val VERSION_GRADLE_LAUNCHER_JAR_REGEX = Regex("gradle-launcher-(?<version>.*?)\\.jar")
   }
 
   // -- Variables --------------------------------------------------------------------------------------------------- //

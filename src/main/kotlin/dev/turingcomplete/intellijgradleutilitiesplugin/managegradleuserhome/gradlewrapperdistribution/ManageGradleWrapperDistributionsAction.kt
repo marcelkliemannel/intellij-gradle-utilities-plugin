@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradlewrapperdistribution
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
@@ -15,6 +16,8 @@ class ManageGradleWrapperDistributionsAction
   // -- Properties -------------------------------------------------------------------------------------------------- //
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     // Nothing to do

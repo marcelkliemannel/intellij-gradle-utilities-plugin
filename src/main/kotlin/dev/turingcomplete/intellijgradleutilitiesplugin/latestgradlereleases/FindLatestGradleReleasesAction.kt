@@ -3,8 +3,11 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.latestgradlereleases
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.net.ssl.CertificateManager
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
@@ -32,6 +35,8 @@ class FindLatestGradleReleasesAction
   // -- Properties -------------------------------------------------------------------------------------------------- //
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val latestProductiveGradleReleases = LinkedHashMap<Int, GradleGitHubRelease>()
@@ -65,7 +70,7 @@ class FindLatestGradleReleasesAction
    */
   @TestOnly
   fun requestLatestGradleGitHubReleases(): List<GradleGitHubRelease> {
-    HttpClients.createDefault().use { httpclient ->
+    HttpClients.custom().setSSLContext(CertificateManager.getInstance().sslContext).build().use { httpclient ->
       val releasesGet = HttpGet("https://api.github.com/repos/gradle/gradle/releases?per_page=100").apply {
         addHeader(GIT_HUB_API_HEADER)
       }
@@ -94,10 +99,12 @@ class FindLatestGradleReleasesAction
   override fun onSuccess(result: LatestGradleReleases?, executionContext: ExecutionContext) {
     result as LatestGradleReleases
 
-    GradleUtilityDialog.show("Latest Gradle Releases",
-                             { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result), true) },
-                             Dimension(720, 500),
-                             executionContext.project)
+    ApplicationManager.getApplication().invokeLater {
+      GradleUtilityDialog.show("Latest Gradle Releases",
+                               { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result), true) },
+                               Dimension(720, 500),
+                               executionContext.project)
+    }
   }
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //

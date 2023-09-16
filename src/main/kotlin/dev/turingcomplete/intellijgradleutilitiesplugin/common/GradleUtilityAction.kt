@@ -1,5 +1,3 @@
-@file:Suppress("DialogTitleCapitalization")
-
 package dev.turingcomplete.intellijgradleutilitiesplugin.common
 
 import com.intellij.ide.DataManager
@@ -19,7 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.Icon
 import javax.swing.JComponent
 
-@Suppress("UnstableApiUsage")
 abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText String,
                                       description: @NlsActions.ActionDescription String? = null,
                                       icon: Icon? = null,
@@ -46,7 +43,7 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
   }
   var showOpensDialogIndicatorOnButtonText: Boolean = true
   var failedTitle: (AnActionEvent) -> String = { e -> "Action \"${title(false, e)}\" failed" }
-  var failureHandlingMode: FailureHandlingMode = FailureHandlingMode.AS_DIALOG
+  private var failureHandlingMode: FailureHandlingMode = FailureHandlingMode.AS_DIALOG
   var confirmationText: String? = null
 
   private val onBeforeStart: MutableList<() -> Unit> = mutableListOf()
@@ -235,7 +232,6 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
 
   // -- Inner Type -------------------------------------------------------------------------------------------------- //
 
-  @Suppress("UnstableApiUsage")
   private class BackgroundTask(canBeCancelled: Boolean,
                                private val parentAction: GradleUtilityAction<*>,
                                private val executionContext: ExecutionContext,

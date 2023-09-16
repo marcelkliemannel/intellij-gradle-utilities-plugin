@@ -3,7 +3,6 @@ package dev.turingcomplete.intellijgradleutilitiesplugin.common.ui
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.ui.ClickListener
 import com.intellij.ui.HyperlinkLabel
@@ -89,7 +88,7 @@ internal object UiUtils {
       componentOrientation = table.componentOrientation
       font = table.font
       isEnabled = table.isEnabled
-      border = JBUI.Borders.empty(2, 3, 2, 3)
+      border = JBUI.Borders.empty(2, 3)
       return this
     }
   }

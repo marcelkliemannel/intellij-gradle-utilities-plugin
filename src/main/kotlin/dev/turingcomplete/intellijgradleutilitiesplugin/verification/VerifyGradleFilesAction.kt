@@ -1,11 +1,13 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.verification
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.net.ssl.CertificateManager
 import com.intellij.util.ui.JBUI
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
@@ -24,7 +26,7 @@ import kotlin.streams.asSequence
 
 
 class VerifyGradleFilesAction
-  : GradleWrapperAction<VerificationResult>("Verify Gradle wrapper JAR and distributions",
+  : GradleWrapperAction<VerificationResult>("Verify Gradle Wrapper JAR and Distributions",
                                             "Verifies the integrity of the project Gradle wrapper JAR and the " +
                                             "downloaded Gradle distributions by matching the SHA-256 checksums with " +
                                             "the official ones.") {
@@ -48,6 +50,8 @@ class VerifyGradleFilesAction
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
 
@@ -179,7 +183,7 @@ class VerifyGradleFilesAction
 
     progressIndicator.text2 = "Requesting SHA-256 checksum for $sha256FileName..."
 
-    return HttpClients.createDefault().use { httpclient ->
+    return HttpClients.custom().setSSLContext(CertificateManager.getInstance().sslContext).build().use { httpclient ->
       val sha256Get = HttpGet("$DISTRIBUTIONS_BASE_URL$sha256FileName")
       httpclient.execute(sha256Get).use { response ->
         if (response.statusLine.statusCode != 200) {

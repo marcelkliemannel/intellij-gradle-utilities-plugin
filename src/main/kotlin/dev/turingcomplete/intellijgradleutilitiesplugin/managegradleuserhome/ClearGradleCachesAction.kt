@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.DataContext
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.DeleteDirectoriesAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.Directory
@@ -19,6 +20,8 @@ class ClearGradleCachesAction
   }
 
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun directories(dataContext: DataContext): List<Directory> {
     return listOf(Directory(GradleUtils.gradleUserHome().resolve("caches")))

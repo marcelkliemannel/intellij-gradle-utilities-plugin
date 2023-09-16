@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.gradleenvironment
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -32,6 +33,8 @@ class CollectGradleEnvironmentInformationAction
   // -- Properties -------------------------------------------------------------------------------------------------- //
   // -- Initialization ---------------------------------------------------------------------------------------------- //
   // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     val project = CommonDataKeys.PROJECT.getData(executionContext.dataContext) ?: return

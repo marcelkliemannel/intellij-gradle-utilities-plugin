@@ -1,13 +1,13 @@
-import org.jetbrains.changelog.closure
-import org.jetbrains.changelog.date
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
   java
-  kotlin("jvm") version "1.5.10"
-  id("org.jetbrains.intellij") version "1.2.1"
-  id("org.jetbrains.changelog") version "1.1.2"
+  kotlin("jvm") version "1.7.10"
+  id("org.jetbrains.intellij") version "1.15.0"
+  id("org.jetbrains.changelog") version "2.1.2"
 }
 
 group = properties("pluginGroup")
@@ -33,9 +33,10 @@ intellij {
 }
 
 changelog {
-  version = project.version as String
-  header = closure { "[$version] - ${date()}" }
-  groups = listOf("Added", "Changed", "Removed", "Fixed")
+  val projectVersion = project.version as String
+  version.set(projectVersion)
+  header.set("[$projectVersion] - ${org.jetbrains.changelog.date()}")
+  groups.set(listOf("Added", "Changed", "Removed", "Fixed"))
 }
 
 tasks {
@@ -43,43 +44,35 @@ tasks {
     version.set(properties("pluginVersion"))
     sinceBuild.set(properties("pluginSinceBuild"))
     untilBuild.set(properties("pluginUntilBuild"))
-    changeNotes.set(provider { changelog.getLatest().toHTML() })
+    changeNotes.set(provider { changelog.renderItem(changelog.get(project.version as String), Changelog.OutputType.HTML) })
   }
 
   runPluginVerifier {
-    ideVersions.set(properties("pluginVerifierIdeVersions").split(',').map(String::trim).filter(String::isNotEmpty))
+    ideVersions.set(properties("pluginVerifierIdeVersions").split(",").map(String::trim).filter(String::isNotEmpty))
   }
 
   publishPlugin {
     dependsOn("patchChangelog")
-    token.set("TOKEN")
+    token.set(project.provider { properties("jetbrains.marketplace.token") })
     channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
   }
 
-  /*
-  runPluginVerifier {
-    ideVersions.set(listOf("IU-213.5744.125", "IU-212.5457.46", "IU-213.5744.18"))
-  }
-  */
-
   signPlugin {
-    certificateChain.set("""
------BEGIN CERTIFICATE-----
------END CERTIFICATE-----
-  """.trimIndent())
+    val jetbrainsDir = File(System.getProperty("user.home"), ".jetbrains")
+    certificateChain.set(project.provider { File(jetbrainsDir, "plugin-sign-chain.crt").readText() })
+    privateKey.set(project.provider { File(jetbrainsDir, "plugin-sign-private-key.pem").readText() })
 
-    privateKey.set("""
------BEGIN ENCRYPTED PRIVATE KEY-----
------END ENCRYPTED PRIVATE KEY-----
-  """.trimIndent())
-
-    password.set("PASSWORD")
+    password.set(project.provider { properties("jetbrains.sign-plugin.password") })
   }
 
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  withType<KotlinCompile> {
     kotlinOptions {
       freeCompilerArgs = listOf("-Xjsr305=strict")
-      jvmTarget = "11"
+      jvmTarget = "17"
     }
+  }
+
+  withType<Test> {
+    systemProperty("idea.test.execution.policy", "dev.turingcomplete.intellijdevelopertoolsplugins.developertool._internal.tool.DeveloperToolTestPolicy")
   }
 }
