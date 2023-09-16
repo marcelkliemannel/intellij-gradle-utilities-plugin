@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.util.net.ssl.CertificateManager
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
@@ -69,7 +70,7 @@ class FindLatestGradleReleasesAction
    */
   @TestOnly
   fun requestLatestGradleGitHubReleases(): List<GradleGitHubRelease> {
-    HttpClients.createDefault().use { httpclient ->
+    HttpClients.custom().setSSLContext(CertificateManager.getInstance().sslContext).build().use { httpclient ->
       val releasesGet = HttpGet("https://api.github.com/repos/gradle/gradle/releases?per_page=100").apply {
         addHeader(GIT_HUB_API_HEADER)
       }
