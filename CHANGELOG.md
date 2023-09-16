@@ -8,12 +8,10 @@
 ### Removed
 
 ### Fixed
+
+- Fix API breaking code changes in newer IntelliJ versions.
+
 ## [1.2.4] - 2022-03-12
-### Added
-
-### Changed
-
-### Removed
 
 ### Fixed
 

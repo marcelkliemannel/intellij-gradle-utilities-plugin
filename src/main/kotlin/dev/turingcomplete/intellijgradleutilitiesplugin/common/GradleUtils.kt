@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.text.nullize
-import com.twelvemonkeys.lang.Platform
 import org.gradle.initialization.BuildLayoutParameters
 import org.jetbrains.plugins.gradle.service.GradleInstallationManager
 import org.jetbrains.plugins.gradle.util.GradleUtil
@@ -66,7 +65,7 @@ object GradleUtils {
   }
 
   fun findGradlewExecutable(projectDir: VirtualFile): VirtualFile? {
-    val gradlewExtension = if (Platform.os() == Platform.OperatingSystem.Windows) ".bat" else ""
+    val gradlewExtension = if (SystemInfo.isWindows) ".bat" else ""
     return projectDir.findChild("gradlew$gradlewExtension")
   }
 

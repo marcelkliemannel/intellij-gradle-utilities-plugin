@@ -7,8 +7,8 @@ import com.intellij.idea.ActionsBundle
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.io.exists
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 open class OpenDirectoryAction
   : GradleUtilityAction<List<Path>>(createTitle(), null, AllIcons.Actions.MenuOpen,
