@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.ui.ScrollPaneFactory
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityAction
@@ -97,10 +98,12 @@ class FindLatestGradleReleasesAction
   override fun onSuccess(result: LatestGradleReleases?, executionContext: ExecutionContext) {
     result as LatestGradleReleases
 
-    GradleUtilityDialog.show("Latest Gradle Releases",
-                             { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result), true) },
-                             Dimension(720, 500),
-                             executionContext.project)
+    ApplicationManager.getApplication().invokeLater {
+      GradleUtilityDialog.show("Latest Gradle Releases",
+                               { ScrollPaneFactory.createScrollPane(LatestGradleReleasesPanel(result), true) },
+                               Dimension(720, 500),
+                               executionContext.project)
+    }
   }
 
   // -- Private Methods --------------------------------------------------------------------------------------------- //
