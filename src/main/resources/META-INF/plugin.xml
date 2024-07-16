@@ -51,6 +51,9 @@
         <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.clear-gradle-caches"
                 class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.ClearGradleCachesAction"/>
 
+        <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.manage-gradle-dependencies"
+                class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradledependencies.ManageGradleDependiencesAction"/>
+
         <action id="dev.turingcomplete.intellij-gradle-utilities-plugin.action.manage-gradle-user-home.manage-gradle-wrapper-distributions"
                 class="dev.turingcomplete.intellijgradleutilitiesplugin.managegradleuserhome.gradlewrapperdistribution.ManageGradleWrapperDistributionsAction"/>
 

@@ -21,6 +21,7 @@ object GradleUtils {
   private val SYSTEM_GRADLE_EXECUTABLE_FILE_NAME = "gradle${if (SystemInfo.isWindows) ".exe" else ""}"
 
   val DISTRIBUTIONS_DIR: Path = Path.of("wrapper", "dists")
+  val MODULES: Path = Path.of("caches", "modules-2")
 
   private val GRADLE_VERSION_OUTPUT_REGEX = Regex("^Gradle (?<version>.*)$")
   private val GRADLE_DAEMON_STATUS_REGEX = Regex("^\\s+(?<pid>\\d+)\\s+(?<status>\\w+)\\s?.*$")
