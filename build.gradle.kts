@@ -129,10 +129,6 @@ intellijPlatform {
 
     ides {
       recommended()
-
-      properties("pluginVerificationAdditionalIdes").split(",").forEach { ide ->
-        create(ide, properties("platformVersion"))
-      }
     }
   }
 }
