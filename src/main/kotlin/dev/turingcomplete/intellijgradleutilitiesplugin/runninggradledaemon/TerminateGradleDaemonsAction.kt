@@ -12,24 +12,25 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActi
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActionFailedException
 import javax.swing.Icon
 
-abstract class TerminateGradleDaemonsAction private constructor(private val gradleDaemonsDataKey: DataKey<List<GradleDaemon>>)
-  : GradleUtilityAction<Void>("Terminate Gradle Daemons"), DumbAware {
+abstract class TerminateGradleDaemonsAction
+private constructor(private val gradleDaemonsDataKey: DataKey<List<GradleDaemon>>) :
+  GradleUtilityAction<Void>("Terminate Gradle Daemons"), DumbAware {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     private val LOG = Logger.getInstance(TerminateGradleDaemonsAction::class.java)
   }
 
-  // -- Variables --------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Variables ----------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     title = { _, e -> title(e.dataContext) }
     isVisible = { e -> gradleDaemons(e.dataContext).isNotEmpty() }
   }
 
-  // -- Exported Methods -------------------------------------------------------------------------------------------- //
+  // -- Exposed Methods ----------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -45,8 +46,7 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
       try {
         progressIndicator.text = "Terminating Gradle daemon with PID ${gradleDaemon.pid}..."
         terminate(gradleDaemon, progressIndicator)
-      }
-      catch (e: Exception) {
+      } catch (e: Exception) {
         val errorMessage = errorMessage(gradleDaemon, e)
         addDeferredFailure(GradleUtilityActionFailedException(errorMessage, e))
       }
@@ -63,15 +63,18 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
 
   protected fun gradleDaemons(dataContext: DataContext): List<GradleDaemon> {
     return gradleDaemonsDataKey.getData(dataContext)
-      ?: throw IllegalStateException("Data context is missing required data key '${gradleDaemonsDataKey.name}'.")
+      ?: throw IllegalStateException(
+        "Data context is missing required data key '${gradleDaemonsDataKey.name}'."
+      )
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  abstract class GracefullyTerminateGradleDaemonsAction(gradleDaemonsDataKey: DataKey<List<GradleDaemon>>)
-    : TerminateGradleDaemonsAction(gradleDaemonsDataKey) {
+  abstract class GracefullyTerminateGradleDaemonsAction(
+    gradleDaemonsDataKey: DataKey<List<GradleDaemon>>
+  ) : TerminateGradleDaemonsAction(gradleDaemonsDataKey) {
 
     override fun icon(): Icon = AllIcons.Actions.Suspend
 
@@ -88,27 +91,31 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  class GracefullyAll : GracefullyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
+  class GracefullyAll :
+    GracefullyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
 
     override fun title(dataContext: DataContext): String = "Gracefully Terminate All Daemons"
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  class GracefullySelected : GracefullyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
+  class GracefullySelected :
+    GracefullyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
 
     override fun title(dataContext: DataContext): String {
       val numOfDaemons = gradleDaemons(dataContext).size
-      return if (numOfDaemons == 1) "Gracefully Terminate Daemon" else "Gracefully Terminate $numOfDaemons Daemons"
+      return if (numOfDaemons == 1) "Gracefully Terminate Daemon"
+      else "Gracefully Terminate $numOfDaemons Daemons"
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  abstract class ForciblyTerminateGradleDaemonsAction(gradleDaemonsDataKey: DataKey<List<GradleDaemon>>)
-    : TerminateGradleDaemonsAction(gradleDaemonsDataKey) {
+  abstract class ForciblyTerminateGradleDaemonsAction(
+    gradleDaemonsDataKey: DataKey<List<GradleDaemon>>
+  ) : TerminateGradleDaemonsAction(gradleDaemonsDataKey) {
 
     override fun icon(): Icon = AllIcons.Debugger.KillProcess
 
@@ -125,20 +132,23 @@ abstract class TerminateGradleDaemonsAction private constructor(private val grad
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  class ForciblyTerminateAll : ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
+  class ForciblyTerminateAll :
+    ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.ALL_DAEMONS) {
 
     override fun title(dataContext: DataContext): String = "Forcibly Terminate All Gradle Daemons"
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  class ForciblyTerminateSelected : ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
+  class ForciblyTerminateSelected :
+    ForciblyTerminateGradleDaemonsAction(RunningGradleDaemonsPanel.SELECTED_DAEMONS) {
 
     override fun title(dataContext: DataContext): String {
       val numOfDaemons = gradleDaemons(dataContext).size
-      return if (numOfDaemons == 1) "Forcibly Terminate Daemon" else "Forcibly Terminate $numOfDaemons Daemons"
+      return if (numOfDaemons == 1) "Forcibly Terminate Daemon"
+      else "Forcibly Terminate $numOfDaemons Daemons"
     }
   }
 }

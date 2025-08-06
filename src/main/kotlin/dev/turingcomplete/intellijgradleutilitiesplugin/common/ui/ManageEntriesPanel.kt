@@ -24,34 +24,34 @@ import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableModel
 import kotlin.properties.Delegates
 
-/**
- * Overriders must call [ManageEntriesPanel#init] at the end of their
- * constructors.
- */
-abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
-                                     private val collectEntriesAction: GradleUtilityAction<List<E>>,
-                                     private val statusTextNoEntries: String,
-                                     private val toolbarPlace: String)
-  : BorderLayoutPanel(), DataProvider, GradleUtilityDialog.DialogHandler {
+/** Overriders must call [ManageEntriesPanel#init] at the end of their constructors. */
+abstract class ManageEntriesPanel<E>(
+  columns: List<Column<E>>,
+  private val collectEntriesAction: GradleUtilityAction<List<E>>,
+  private val statusTextNoEntries: String,
+  private val toolbarPlace: String,
+) : BorderLayoutPanel(), DataProvider, GradleUtilityDialog.DialogHandler {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
 
   private val toolbar: JComponent by lazy { createToolbar(toolbarPlace) }
   private val tableModel = ManageEntriesModel(columns)
   protected val table = ManageEntriesTable(tableModel)
 
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exported Methods ---------------------------------------------------- //
 
   protected fun init() {
     initCollectEntriesAction()
 
-    addToCenter(SimpleToolWindowPanel(true).apply {
-      border = JBUI.Borders.customLine(JBColor.border())
-      toolbar = this@ManageEntriesPanel.toolbar
-      setContent(ScrollPaneFactory.createScrollPane(table, true))
-    })
+    addToCenter(
+      SimpleToolWindowPanel(true).apply {
+        border = JBUI.Borders.customLine(JBColor.border())
+        toolbar = this@ManageEntriesPanel.toolbar
+        setContent(ScrollPaneFactory.createScrollPane(table, true))
+      }
+    )
 
     val settings = createSettings()
     if (settings.isNotEmpty()) {
@@ -76,9 +76,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
 
   protected open fun createSettings(): List<Setting> = listOf()
 
-  /**
-   * The method is called every time the context menu is opened.
-   */
+  /** The method is called every time the context menu is opened. */
   protected open fun tableContextMenuActions(): ActionGroup? = null
 
   protected fun collectEntries() {
@@ -101,24 +99,25 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     collectEntries()
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
 
   private fun createToolbar(toolbarPlace: String): JComponent {
-    val actionGroup = DefaultActionGroup().apply {
-      add(collectEntriesAction)
+    val actionGroup =
+      DefaultActionGroup().apply {
+        add(collectEntriesAction)
 
-      val manageAllEntriesActions = createManageAllEntriesActions()
-      if (manageAllEntriesActions.isNotEmpty()) {
-        addSeparator()
+        val manageAllEntriesActions = createManageAllEntriesActions()
+        if (manageAllEntriesActions.isNotEmpty()) {
+          addSeparator()
 
-        manageAllEntriesActions.forEach {
-          it.isEnabled = { actionOnEntriesEnabled() }
-          it.onSuccess { collectEntries() }
-          it.onFailure { collectEntries() }
-          add(it)
+          manageAllEntriesActions.forEach {
+            it.isEnabled = { actionOnEntriesEnabled() }
+            it.onSuccess { collectEntries() }
+            it.onFailure { collectEntries() }
+            add(it)
+          }
         }
       }
-    }
 
     return ActionManager.getInstance().createActionToolbar(toolbarPlace, actionGroup, true).run {
       targetComponent = this@ManageEntriesPanel
@@ -132,12 +131,14 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
 
   private fun initCollectEntriesAction() {
     collectEntriesAction
-            .onBeforeStart {
-              tableModel.entries = listOf()
-              ApplicationManager.getApplication().invokeLater { syncGui() }
-            }
-            .onSuccess { result -> tableModel.entries = result ?: throw IllegalStateException("snh: Result not set") }
-            .onFinished { syncGui() }
+      .onBeforeStart {
+        tableModel.entries = listOf()
+        ApplicationManager.getApplication().invokeLater { syncGui() }
+      }
+      .onSuccess { result ->
+        tableModel.entries = result ?: throw IllegalStateException("snh: Result not set")
+      }
+      .onFinished { syncGui() }
   }
 
   private fun syncGui() {
@@ -153,8 +154,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       if (secondLine != null) {
         table.emptyText.appendLine(secondLine)
       }
-    }
-    else {
+    } else {
       table.emptyText.text = statusTextNoEntries
     }
 
@@ -173,22 +173,30 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
       settings.forEach { setting ->
         val settingCheckBox = JBCheckBox(setting.text, setting.isSelected())
         settingCheckBox.addActionListener { setting.setSelected(settingCheckBox.isSelected) }
-        val component = if (setting.description != null) {
-          ComponentPanelBuilder(settingCheckBox).withTooltip(setting.description).createPanel()
-        }
-        else {
-          settingCheckBox
-        }
-        add(component, bag.nextLine().next().weightx(1.0).fillCellHorizontally().overrideTopInset(UIUtil.DEFAULT_VGAP))
+        val component =
+          if (setting.description != null) {
+            ComponentPanelBuilder(settingCheckBox).withTooltip(setting.description).createPanel()
+          } else {
+            settingCheckBox
+          }
+        add(
+          component,
+          bag
+            .nextLine()
+            .next()
+            .weightx(1.0)
+            .fillCellHorizontally()
+            .overrideTopInset(UIUtil.DEFAULT_VGAP),
+        )
       }
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   class Column<E>(val title: String, val value: (E) -> String?)
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   protected abstract class Setting(val text: String, val description: String? = null) {
 
@@ -197,7 +205,7 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     abstract fun setSelected(selected: Boolean)
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   private class ManageEntriesModel<E>(private val columns: List<Column<E>>) : AbstractTableModel() {
 
@@ -212,22 +220,38 @@ abstract class ManageEntriesPanel<E>(columns: List<Column<E>>,
     override fun getValueAt(row: Int, column: Int): Any? = columns[column].value(entries[row])
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   protected inner class ManageEntriesTable(tableModel: TableModel) : JBTable(tableModel) {
 
     init {
-      addMouseListener(UiUtils.Table.createContextMenuMouseListener(this@ManageEntriesPanel::class.qualifiedName!!) {
-        tableContextMenuActions()
-      })
-
-      setDefaultRenderer(Object::class.java, object : JBLabel(), TableCellRenderer {
-        override fun getTableCellRendererComponent(table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int): Component {
-          text = if (value == null) "Unknown" else (value as String)
-          font = if (value == null) UIUtil.getFont(UIUtil.FontSize.SMALL, UIUtil.getLabelFont()) else UIUtil.getLabelFont()
-          return this.formatCell(table, isSelected)
+      addMouseListener(
+        UiUtils.Table.createContextMenuMouseListener(
+          this@ManageEntriesPanel::class.qualifiedName!!
+        ) {
+          tableContextMenuActions()
         }
-      })
+      )
+
+      setDefaultRenderer(
+        Object::class.java,
+        object : JBLabel(), TableCellRenderer {
+          override fun getTableCellRendererComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int,
+          ): Component {
+            text = if (value == null) "Unknown" else (value as String)
+            font =
+              if (value == null) UIUtil.getFont(UIUtil.FontSize.SMALL, UIUtil.getLabelFont())
+              else UIUtil.getLabelFont()
+            return this.formatCell(table, isSelected)
+          }
+        },
+      )
     }
   }
 }

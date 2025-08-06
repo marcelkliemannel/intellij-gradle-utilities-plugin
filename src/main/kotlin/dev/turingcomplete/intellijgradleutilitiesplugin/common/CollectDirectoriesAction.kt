@@ -4,25 +4,33 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.NlsActions
-import com.intellij.util.io.isDirectory
-import org.apache.commons.io.FileUtils
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
+import org.apache.commons.io.FileUtils
 
-abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
-                                        private val progressText: String,
-                                        description: @NlsActions.ActionDescription String? = null)
-  : GradleUtilityAction<List<Directory>>(title, description, AllIcons.Actions.Refresh, executionMode = ExecutionMode.MODAL) {
+abstract class CollectDirectoriesAction(
+  title: @NlsActions.ActionText String,
+  private val progressText: String,
+  description: @NlsActions.ActionDescription String? = null,
+) :
+  GradleUtilityAction<List<Directory>>(
+    title,
+    description,
+    AllIcons.Actions.Refresh,
+    executionMode = ExecutionMode.MODAL,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
-    val CALCULATE_SIZE: DataKey<Boolean> = DataKey.create("Gradle.Utilities.Plugin.CollectDirectoriesAction.CalculateSize")
+    val CALCULATE_SIZE: DataKey<Boolean> =
+      DataKey.create("Gradle.Utilities.Plugin.CollectDirectoriesAction.CalculateSize")
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exported Methods ---------------------------------------------------- //
 
   abstract fun parentDirectory(): Path
 
@@ -36,24 +44,27 @@ abstract class CollectDirectoriesAction(title: @NlsActions.ActionText String,
 
     progressIndicator.text = progressText
     val calculateSize = CALCULATE_SIZE.getData(executionContext.dataContext) ?: false
-    result(Files.list(parentDirectory()).use { path ->
-      path.filter { it.isDirectory() && filter(it) }
-              .map {
-                val size = if (calculateSize) {
-                  progressIndicator.text2 = "Calculating size of: ${it.fileName}..."
-                  val sizeResult = FileUtils.sizeOfDirectory(it.toFile())
-                  progressIndicator.text2 = ""
-                  sizeResult
-                }
-                else {
-                  null
-                }
-                Directory(it, size)
+    result(
+      Files.list(parentDirectory()).use { path ->
+        path
+          .filter { it.isDirectory() && filter(it) }
+          .map {
+            val size =
+              if (calculateSize) {
+                progressIndicator.text2 = "Calculating size of: ${it.fileName}..."
+                val sizeResult = FileUtils.sizeOfDirectory(it.toFile())
+                progressIndicator.text2 = ""
+                sizeResult
+              } else {
+                null
               }
-              .toList()
-    })
+            Directory(it, size)
+          }
+          .toList()
+      }
+    )
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

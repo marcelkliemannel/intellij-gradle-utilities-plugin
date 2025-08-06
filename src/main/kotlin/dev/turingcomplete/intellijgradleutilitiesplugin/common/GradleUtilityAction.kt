@@ -17,26 +17,29 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.Icon
 import javax.swing.JComponent
 
-abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText String,
-                                      description: @NlsActions.ActionDescription String? = null,
-                                      icon: Icon? = null,
-                                      private val canBeCancelled: Boolean = true,
-                                      private val executionMode: ExecutionMode = ExecutionMode.BACKGROUND,
-                                      private val performInBackgroundOption: PerformInBackgroundOption = getDefaultPerformInBackgroundOption(executionMode))
-  : AnAction(null, description, icon), DumbAware {
+abstract class GradleUtilityAction<R>(
+  initialTitle: @NlsActions.ActionText String,
+  description: @NlsActions.ActionDescription String? = null,
+  icon: Icon? = null,
+  private val canBeCancelled: Boolean = true,
+  private val executionMode: ExecutionMode = ExecutionMode.BACKGROUND,
+  private val performInBackgroundOption: PerformInBackgroundOption =
+    getDefaultPerformInBackgroundOption(executionMode),
+) : AnAction(null, description, icon), DumbAware {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     private val LOGGER = Logger.getInstance(GradleUtilityAction::class.java)
 
-    private fun getDefaultPerformInBackgroundOption(executionMode: ExecutionMode) = when (executionMode) {
-      ExecutionMode.BACKGROUND -> PerformInBackgroundOption.ALWAYS_BACKGROUND
-      else -> PerformInBackgroundOption.DEAF
-    }
+    private fun getDefaultPerformInBackgroundOption(executionMode: ExecutionMode) =
+      when (executionMode) {
+        ExecutionMode.BACKGROUND -> PerformInBackgroundOption.ALWAYS_BACKGROUND
+        else -> PerformInBackgroundOption.DEAF
+      }
   }
 
-  // -- Variables --------------------------------------------------------------------------------------------------- //
+  // -- Variables ----------------------------------------------------------- //
 
   var title: (Boolean, AnActionEvent) -> String = { isExecutionTitle, _ ->
     "$initialTitle${if (!isExecutionTitle && (showOpensDialogIndicatorOnButtonText || confirmationText != null)) "..." else ""}"
@@ -58,26 +61,30 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
   private var result: R? = null
   private val failures = mutableListOf<Throwable>()
 
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exported Methods -------------------------------------------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exposed Methods ----------------------------------------------------- //
 
   final override fun actionPerformed(e: AnActionEvent) {
     if (inExecution.getAndSet(true)) {
       return
     }
 
-    val executionContext = ExecutionContext(e.dataContext,
-                                            CommonDataKeys.PROJECT.getData(e.dataContext),
-                                            title(true, e),
-                                            failedTitle(e))
+    val executionContext =
+      ExecutionContext(
+        e.dataContext,
+        CommonDataKeys.PROJECT.getData(e.dataContext),
+        title(true, e),
+        failedTitle(e),
+      )
 
     if (confirmationText != null) {
-      val doRunAction = MessageDialogBuilder.yesNoCancel("Confirm", confirmationText!!).show(executionContext.project) == YES
+      val doRunAction =
+        MessageDialogBuilder.yesNoCancel("Confirm", confirmationText!!)
+          .show(executionContext.project) == YES
       if (!doRunAction) {
         try {
           onCanceled0(executionContext)
-        }
-        finally {
+        } finally {
           onFinished0(executionContext)
         }
         return
@@ -88,30 +95,27 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
     onBeforeStart.forEach { it() }
 
     when (executionMode) {
-      ExecutionMode.BACKGROUND -> BackgroundTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
-      ExecutionMode.MODAL -> ModalTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
+      ExecutionMode.BACKGROUND ->
+        BackgroundTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
+      ExecutionMode.MODAL ->
+        ModalTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
       ExecutionMode.DIRECT -> {
         try {
           runAction(executionContext, EmptyProgressIndicator())
           onSuccess0(executionContext)
-        }
-        catch (e: ProcessCanceledException) {
+        } catch (e: ProcessCanceledException) {
           onCanceled0(executionContext)
           throw e
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
           onThrowable0(e, executionContext)
-        }
-        finally {
+        } finally {
           onFinished0(executionContext)
         }
       }
     }
   }
 
-  /**
-   * Overrider must call super method!
-   */
+  /** Overrider must call super method! */
   override fun update(e: AnActionEvent) {
     val inExecution = inExecution.get()
     e.presentation.text = title(inExecution, e)
@@ -119,9 +123,13 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
     e.presentation.isVisible = isVisible(e)
   }
 
-  fun execute(dataContextComponent: JComponent?, presentation: Presentation? = templatePresentation) {
+  fun execute(
+    dataContextComponent: JComponent?,
+    presentation: Presentation? = templatePresentation,
+  ) {
     val dataContext = DataManager.getInstance().getDataContext(dataContextComponent)
-    val actionEvent = AnActionEvent.createFromDataContext(this::class.qualifiedName!!, presentation, dataContext)
+    val actionEvent =
+      AnActionEvent.createFromDataContext(this::class.qualifiedName!!, presentation, dataContext)
     update(actionEvent)
     actionPerformed(actionEvent)
   }
@@ -170,7 +178,7 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
 
   fun isInExecution() = inExecution.get()
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
 
   private fun onThrowable0(failure: Throwable, executionContext: ExecutionContext) {
     failures.add(failure)
@@ -208,35 +216,52 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
   }
 
   private fun handleFailure(error: Throwable, executionContext: ExecutionContext) {
-    val (message, displayMessage) = when (error is GradleUtilityActionFailedException) {
-      true -> Pair(error.message, error.message)
-      false -> {
-        val message = if (error.message != null) "${executionContext.failureTitle}: ${error.message}" else executionContext.failureTitle
-        val displayMessage = "$message\nSee idea.log for more details.\nIf you think this error should not appear, please report a bug."
-        Pair(message, displayMessage)
+    val (message, displayMessage) =
+      when (error is GradleUtilityActionFailedException) {
+        true -> Pair(error.message, error.message)
+        false -> {
+          val message =
+            if (error.message != null) "${executionContext.failureTitle}: ${error.message}"
+            else executionContext.failureTitle
+          val displayMessage =
+            "$message\nSee idea.log for more details.\nIf you think this error should not appear, please report a bug."
+          Pair(message, displayMessage)
+        }
       }
-    }
 
     LOGGER.warn(message, error)
 
     when (failureHandlingMode) {
-      FailureHandlingMode.AS_NOTIFICATION -> NotificationUtils.notifyError(executionContext.failureTitle,
-                                                                           displayMessage,
-                                                                           executionContext.project)
+      FailureHandlingMode.AS_NOTIFICATION ->
+        NotificationUtils.notifyError(
+          executionContext.failureTitle,
+          displayMessage,
+          executionContext.project,
+        )
 
-      FailureHandlingMode.AS_DIALOG -> Messages.showErrorDialog(executionContext.project,
-                                                                displayMessage,
-                                                                executionContext.failureTitle)
+      FailureHandlingMode.AS_DIALOG ->
+        Messages.showErrorDialog(
+          executionContext.project,
+          displayMessage,
+          executionContext.failureTitle,
+        )
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  private class BackgroundTask(canBeCancelled: Boolean,
-                               private val parentAction: GradleUtilityAction<*>,
-                               private val executionContext: ExecutionContext,
-                               performInBackgroundOption: PerformInBackgroundOption)
-    : Task.Backgroundable(executionContext.project, executionContext.title, canBeCancelled, performInBackgroundOption) {
+  private class BackgroundTask(
+    canBeCancelled: Boolean,
+    private val parentAction: GradleUtilityAction<*>,
+    private val executionContext: ExecutionContext,
+    performInBackgroundOption: PerformInBackgroundOption,
+  ) :
+    Task.Backgroundable(
+      executionContext.project,
+      executionContext.title,
+      canBeCancelled,
+      performInBackgroundOption,
+    ) {
 
     override fun run(progressIndicator: ProgressIndicator) {
       parentAction.runAction(executionContext, progressIndicator)
@@ -261,13 +286,20 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
     override fun whereToRunCallbacks(): EdtReplacementThread = EdtReplacementThread.EDT
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  private class ModalTask(canBeCancelled: Boolean,
-                          private val parentAction: GradleUtilityAction<*>,
-                          private val executionContext: ExecutionContext,
-                          performInBackgroundOption: PerformInBackgroundOption)
-    : Task.ConditionalModal(executionContext.project, executionContext.title, canBeCancelled, performInBackgroundOption) {
+  private class ModalTask(
+    canBeCancelled: Boolean,
+    private val parentAction: GradleUtilityAction<*>,
+    private val executionContext: ExecutionContext,
+    performInBackgroundOption: PerformInBackgroundOption,
+  ) :
+    Task.ConditionalModal(
+      executionContext.project,
+      executionContext.title,
+      canBeCancelled,
+      performInBackgroundOption,
+    ) {
 
     override fun run(progressIndicator: ProgressIndicator) {
       parentAction.runAction(executionContext, progressIndicator)
@@ -292,18 +324,27 @@ abstract class GradleUtilityAction<R>(initialTitle: @NlsActions.ActionText Strin
     override fun whereToRunCallbacks(): EdtReplacementThread = EdtReplacementThread.EDT
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  enum class FailureHandlingMode { AS_DIALOG, AS_NOTIFICATION }
+  enum class FailureHandlingMode {
+    AS_DIALOG,
+    AS_NOTIFICATION,
+  }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  enum class ExecutionMode { BACKGROUND, MODAL, DIRECT }
+  enum class ExecutionMode {
+    BACKGROUND,
+    MODAL,
+    DIRECT,
+  }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  class ExecutionContext(val dataContext: DataContext,
-                         val project: Project? = null,
-                         val title: String,
-                         val failureTitle: String)
+  class ExecutionContext(
+    val dataContext: DataContext,
+    val project: Project? = null,
+    val title: String,
+    val failureTitle: String,
+  )
 }

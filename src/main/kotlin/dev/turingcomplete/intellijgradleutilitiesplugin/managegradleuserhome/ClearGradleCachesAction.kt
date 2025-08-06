@@ -6,20 +6,21 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.DeleteDirectories
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.Directory
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 
-class ClearGradleCachesAction
-  : DeleteDirectoriesAction("Clear Gradle Caches", "Clears the Gradle caches.") {
+class ClearGradleCachesAction :
+  DeleteDirectoriesAction("Clear Gradle Caches", "Clears the Gradle caches.") {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
-    confirmationText = "Before clearing the Gradle caches all Gradle daemons " +
-                       "should be terminated, otherwise the deletion might fail. " +
-                       "Do you want to proceed?"
+    confirmationText =
+      "Before clearing the Gradle caches all Gradle daemons " +
+        "should be terminated, otherwise the deletion might fail. " +
+        "Do you want to proceed?"
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -27,6 +28,6 @@ class ClearGradleCachesAction
     return listOf(Directory(GradleUtils.gradleUserHome().resolve("caches")))
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

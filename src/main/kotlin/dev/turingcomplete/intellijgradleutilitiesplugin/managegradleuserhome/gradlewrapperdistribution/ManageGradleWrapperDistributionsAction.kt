@@ -7,15 +7,17 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActi
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
 import java.awt.Dimension
 
-class ManageGradleWrapperDistributionsAction
-  : GradleUtilityAction<Void>("Manage Gradle Wrapper Distributions",
-                              "Manage all downloaded Gradle wrapper distributions.",
-                              executionMode = ExecutionMode.DIRECT) {
+class ManageGradleWrapperDistributionsAction :
+  GradleUtilityAction<Void>(
+    "Manage Gradle Wrapper Distributions",
+    "Manage all downloaded Gradle wrapper distributions.",
+    executionMode = ExecutionMode.DIRECT,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -25,13 +27,15 @@ class ManageGradleWrapperDistributionsAction
 
   override fun onSuccess(result: Void?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
-      GradleUtilityDialog.show("Manage Gradle Wrapper Distributions",
-                               { GradleWrapperDistributionsPanel() },
-                               Dimension(400, 350),
-                               executionContext.project)
+      GradleUtilityDialog.show(
+        "Manage Gradle Wrapper Distributions",
+        { GradleWrapperDistributionsPanel() },
+        Dimension(400, 350),
+        executionContext.project,
+      )
     }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

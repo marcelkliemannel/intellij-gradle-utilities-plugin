@@ -15,18 +15,19 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 
-open class DeleteDirectoriesAction(overrideTitle: @NlsActions.ActionText String? = null,
-                                   description: @NlsActions.ActionDescription String? = null)
-  : GradleUtilityAction<Void>(overrideTitle ?: "", description, AllIcons.Actions.GC) {
+open class DeleteDirectoriesAction(
+  overrideTitle: @NlsActions.ActionText String? = null,
+  description: @NlsActions.ActionDescription String? = null,
+) : GradleUtilityAction<Void>(overrideTitle ?: "", description, AllIcons.Actions.GC) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     private val LOG = Logger.getInstance(DeleteDirectoriesAction::class.java)
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     if (overrideTitle == null) {
@@ -40,39 +41,49 @@ open class DeleteDirectoriesAction(overrideTitle: @NlsActions.ActionText String?
     isVisible = { e -> directories(e.dataContext).isNotEmpty() }
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   open fun directories(dataContext: DataContext): List<Directory> {
-    return CommonDataKeys.SELECTED_DIRECTORIES.getData(dataContext)?.safeCastTo<List<Directory>>() ?: listOf()
+    return CommonDataKeys.SELECTED_DIRECTORIES.getData(dataContext)?.safeCastTo<List<Directory>>()
+      ?: listOf()
   }
 
-  final override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
+  final override fun runAction(
+    executionContext: ExecutionContext,
+    progressIndicator: ProgressIndicator,
+  ) {
     val directories = directories(executionContext.dataContext)
-    directories.asSequence().map { it.path }.forEach { directory ->
-      if (!Files.exists(directory)) {
-        LOG.info("Directory '$directory' not deleted because it does not exists.")
-        return
-      }
+    directories
+      .asSequence()
+      .map { it.path }
+      .forEach { directory ->
+        if (!Files.exists(directory)) {
+          LOG.info("Directory '$directory' not deleted because it does not exists.")
+          return
+        }
 
-      val statusMessage = "Deleting directory: $directory..."
-      LOG.info(statusMessage)
-      progressIndicator.text = statusMessage
+        val statusMessage = "Deleting directory: $directory..."
+        LOG.info(statusMessage)
+        progressIndicator.text = statusMessage
 
-      NonProjectFileWritingAccessProvider.disableChecksDuring {
-        Files.walkFileTree(directory, object : SimpleFileVisitor<Path>() {
-          override fun postVisitDirectory(dir: Path, exc: IOException?): FileVisitResult {
-            progressIndicator.checkCanceled()
-            progressIndicator.text2 = directory.relativize(dir).toString()
-            dir.delete(true)
-            return FileVisitResult.CONTINUE
-          }
-        })
+        NonProjectFileWritingAccessProvider.disableChecksDuring {
+          Files.walkFileTree(
+            directory,
+            object : SimpleFileVisitor<Path>() {
+              override fun postVisitDirectory(dir: Path, exc: IOException?): FileVisitResult {
+                progressIndicator.checkCanceled()
+                progressIndicator.text2 = directory.relativize(dir).toString()
+                dir.delete(true)
+                return FileVisitResult.CONTINUE
+              }
+            },
+          )
+        }
       }
-    }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }
