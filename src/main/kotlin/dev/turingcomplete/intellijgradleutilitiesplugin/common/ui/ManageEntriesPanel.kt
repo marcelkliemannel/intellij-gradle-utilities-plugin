@@ -1,5 +1,6 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.common.ui
 
+import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -80,7 +81,8 @@ abstract class ManageEntriesPanel<E>(
   protected open fun tableContextMenuActions(): ActionGroup? = null
 
   protected fun collectEntries() {
-    collectEntriesAction.execute(this)
+    val dataContext = DataManager.getInstance().getDataContext(this)
+    collectEntriesAction.execute(dataContext)
   }
 
   protected fun allEntries(): List<E> = tableModel.entries

@@ -1,6 +1,5 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.common.ui
 
-import com.intellij.openapi.actionSystem.DataProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.Dimension
@@ -12,7 +11,7 @@ private constructor(
   project: Project?,
   private val createComponent: () -> JComponent,
   size: Dimension,
-) : DialogWrapper(project), DataProvider {
+) : DialogWrapper(project) {
   // -- Companion Object ---------------------------------------------------- //
 
   companion object {
@@ -45,13 +44,6 @@ private constructor(
     }
 
     super.show()
-  }
-
-  override fun getData(dataId: String): Any? {
-    return when (val component0 = component) {
-      is DataProvider -> component0.getData(dataId)
-      else -> null
-    }
   }
 
   override fun createActions() = arrayOf(myOKAction)
