@@ -105,7 +105,7 @@
                 class="dev.turingcomplete.intellijgradleutilitiesplugin.other.OpenWebsiteAction$GitHubGradle"/>
       </group>
 
-      <add-to-group group-id="Gradle.View.ActionsToolbar.LeftPanel"/>
+      <add-to-group group-id="Gradle.View.ActionsToolbar.OtherActionsPanel"/>
     </group>
   </actions>
 

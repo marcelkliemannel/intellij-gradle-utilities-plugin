@@ -9,6 +9,7 @@
 ### Removed
 
 ### Fixed
+- Compatibility with IntelliJ 2025.2
 
 ## 1.2.5 - 2023-09-16
 

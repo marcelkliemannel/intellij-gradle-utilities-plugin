@@ -4,10 +4,10 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.NlsActions
-import com.intellij.util.io.isDirectory
 import java.nio.file.Files
 import java.nio.file.Path
 import org.apache.commons.io.FileUtils
+import kotlin.io.path.isDirectory
 
 abstract class CollectDirectoriesAction(
   title: @NlsActions.ActionText String,

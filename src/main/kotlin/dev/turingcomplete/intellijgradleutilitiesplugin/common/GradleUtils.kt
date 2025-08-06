@@ -42,14 +42,14 @@ object GradleUtils {
 
     val getAutodetectedGradleHomeWithoutParameter = {
       val method = gradleInstallationManager::class.java.getMethod("getAutodetectedGradleHome")
-      (method.invoke(gradleInstallationManager) as File?)?.toPath()
+      (method.invoke(gradleInstallationManager) as Path?)
     }
     val getAutodetectedGradleHomeWithProjectParameter = {
       val method =
         gradleInstallationManager::class
           .java
           .getMethod("getAutodetectedGradleHome", Project::class.java)
-      (method.invoke(gradleInstallationManager, project) as File?)?.toPath()
+      (method.invoke(gradleInstallationManager, project) as Path?)
     }
     return findAutodetectGradleHome(
       ArrayDeque(
