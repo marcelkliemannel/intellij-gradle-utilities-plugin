@@ -26,8 +26,8 @@ private constructor(private val gradleDaemonsDataKey: DataKey<List<GradleDaemon>
   // -- Initialization ------------------------------------------------------ //
 
   init {
-    title = { _, e -> title(e.dataContext) }
-    isVisible = { e -> gradleDaemons(e.dataContext).isNotEmpty() }
+    title = { _, dataContext -> title(dataContext) }
+    isVisible = { dataContext -> gradleDaemons(dataContext).isNotEmpty() }
   }
 
   // -- Exposed Methods ----------------------------------------------------- //

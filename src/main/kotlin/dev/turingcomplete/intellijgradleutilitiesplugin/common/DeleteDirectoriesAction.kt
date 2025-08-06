@@ -31,14 +31,14 @@ open class DeleteDirectoriesAction(
 
   init {
     if (overrideTitle == null) {
-      this.title = { _, e ->
-        val selectedDirectories = directories(e.dataContext)
+      this.title = { _, dataContext ->
+        val selectedDirectories = directories(dataContext)
         val numOfDirectories = selectedDirectories.size
         if (numOfDirectories == 1) "Delete Directory" else "Delete $numOfDirectories Directories"
       }
     }
 
-    isVisible = { e -> directories(e.dataContext).isNotEmpty() }
+    isVisible = { dataContext -> directories(dataContext).isNotEmpty() }
   }
 
   // -- Exported Methods ---------------------------------------------------- //

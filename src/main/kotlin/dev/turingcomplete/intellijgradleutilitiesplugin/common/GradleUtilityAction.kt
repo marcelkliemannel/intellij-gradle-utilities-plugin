@@ -1,6 +1,5 @@
 package dev.turingcomplete.intellijgradleutilitiesplugin.common
 
-import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.EdtReplacementThread
@@ -15,7 +14,6 @@ import com.intellij.openapi.util.NlsActions
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.NotificationUtils
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.Icon
-import javax.swing.JComponent
 
 abstract class GradleUtilityAction<R>(
   initialTitle: @NlsActions.ActionText String,
@@ -41,11 +39,13 @@ abstract class GradleUtilityAction<R>(
 
   // -- Variables ----------------------------------------------------------- //
 
-  var title: (Boolean, AnActionEvent) -> String = { isExecutionTitle, _ ->
+  var title: (Boolean, DataContext) -> String = { isExecutionTitle, _ ->
     "$initialTitle${if (!isExecutionTitle && (showOpensDialogIndicatorOnButtonText || confirmationText != null)) "..." else ""}"
   }
   var showOpensDialogIndicatorOnButtonText: Boolean = true
-  var failedTitle: (AnActionEvent) -> String = { e -> "Action \"${title(false, e)}\" failed" }
+  var failedTitle: (DataContext) -> String = { dataContext ->
+    "Action \"${title(false, dataContext)}\" failed"
+  }
   private var failureHandlingMode: FailureHandlingMode = FailureHandlingMode.AS_DIALOG
   var confirmationText: String? = null
 
@@ -54,8 +54,8 @@ abstract class GradleUtilityAction<R>(
   private val onFinished: MutableList<() -> Unit> = mutableListOf()
   private val onFailure: MutableList<(Throwable) -> Unit> = mutableListOf()
 
-  var isVisible: (AnActionEvent) -> Boolean = { true }
-  var isEnabled: (AnActionEvent) -> Boolean = { true }
+  var isVisible: (DataContext) -> Boolean = { true }
+  var isEnabled: (DataContext) -> Boolean = { true }
 
   private val inExecution = AtomicBoolean(false)
   private var result: R? = null
@@ -65,16 +65,20 @@ abstract class GradleUtilityAction<R>(
   // -- Exposed Methods ----------------------------------------------------- //
 
   final override fun actionPerformed(e: AnActionEvent) {
+    execute(e.dataContext)
+  }
+
+  fun execute(dataContext: DataContext) {
     if (inExecution.getAndSet(true)) {
       return
     }
 
     val executionContext =
       ExecutionContext(
-        e.dataContext,
-        CommonDataKeys.PROJECT.getData(e.dataContext),
-        title(true, e),
-        failedTitle(e),
+        dataContext,
+        CommonDataKeys.PROJECT.getData(dataContext),
+        title(true, dataContext),
+        failedTitle(dataContext),
       )
 
     if (confirmationText != null) {
@@ -97,8 +101,10 @@ abstract class GradleUtilityAction<R>(
     when (executionMode) {
       ExecutionMode.BACKGROUND ->
         BackgroundTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
+
       ExecutionMode.MODAL ->
         ModalTask(canBeCancelled, this, executionContext, performInBackgroundOption).queue()
+
       ExecutionMode.DIRECT -> {
         try {
           runAction(executionContext, EmptyProgressIndicator())
@@ -118,20 +124,9 @@ abstract class GradleUtilityAction<R>(
   /** Overrider must call super method! */
   override fun update(e: AnActionEvent) {
     val inExecution = inExecution.get()
-    e.presentation.text = title(inExecution, e)
-    e.presentation.isEnabled = if (inExecution) false else isEnabled(e)
-    e.presentation.isVisible = isVisible(e)
-  }
-
-  fun execute(
-    dataContextComponent: JComponent?,
-    presentation: Presentation? = templatePresentation,
-  ) {
-    val dataContext = DataManager.getInstance().getDataContext(dataContextComponent)
-    val actionEvent =
-      AnActionEvent.createFromDataContext(this::class.qualifiedName!!, presentation, dataContext)
-    update(actionEvent)
-    actionPerformed(actionEvent)
+    e.presentation.text = title(inExecution, e.dataContext)
+    e.presentation.isEnabled = if (inExecution) false else isEnabled(e.dataContext)
+    e.presentation.isVisible = isVisible(e.dataContext)
   }
 
   abstract fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator)

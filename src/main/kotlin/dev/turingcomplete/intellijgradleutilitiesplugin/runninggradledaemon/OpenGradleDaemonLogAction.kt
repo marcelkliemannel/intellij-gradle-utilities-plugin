@@ -25,8 +25,8 @@ class OpenGradleDaemonLogAction :
   init {
     showOpensDialogIndicatorOnButtonText = false
 
-    isVisible = { e ->
-      val gradleDaemon = RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(e.dataContext)
+    isVisible = { dataContext ->
+      val gradleDaemon = RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(dataContext)
       gradleDaemon?.version != null
     }
   }

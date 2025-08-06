@@ -37,9 +37,9 @@ open class OpenDirectoryAction :
   init {
     showOpensDialogIndicatorOnButtonText = false
 
-    isVisible = { e -> directory(e.dataContext) != null }
+    isVisible = { dataContext -> directory(dataContext) != null }
 
-    isEnabled = { e -> directory(e.dataContext)?.exists() ?: false }
+    isEnabled = { dataContext -> directory(dataContext)?.exists() ?: false }
   }
 
   // -- Exported Methods ---------------------------------------------------- //

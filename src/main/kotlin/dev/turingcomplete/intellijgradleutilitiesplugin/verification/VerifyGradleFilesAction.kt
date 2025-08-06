@@ -47,7 +47,7 @@ class VerifyGradleFilesAction :
   init {
     showOpensDialogIndicatorOnButtonText = false
 
-    isVisible = { e -> CommonDataKeys.PROJECT.getData(e.dataContext) != null }
+    isVisible = { dataContext -> CommonDataKeys.PROJECT.getData(dataContext) != null }
   }
 
   // -- Exported Methods ---------------------------------------------------- //

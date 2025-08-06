@@ -21,7 +21,9 @@ class ShowGradleDaemonCommandLineAction :
   // -- Initialization ------------------------------------------------------ //
 
   init {
-    isVisible = { e -> RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(e.dataContext) != null }
+    isVisible = { dataContext ->
+      RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(dataContext) != null
+    }
   }
 
   // -- Exposed Methods ----------------------------------------------------- //
