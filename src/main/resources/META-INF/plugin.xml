@@ -1,5 +1,4 @@
 <idea-plugin>
-  <id>dev.turingcomplete.intellij-gradle-utilities-plugin</id>
   <name>Gradle Utilities</name>
   <vendor email="dev@marcelkliemannel.com" url="https://www.marcelkliemannel.com/project/intellij-gradle-utilities-plugin">Marcel Kliemannel</vendor>
 
