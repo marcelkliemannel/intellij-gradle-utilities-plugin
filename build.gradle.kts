@@ -32,7 +32,9 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    create(platform, properties("platformVersion"), false)
+    create(platform, properties("platformVersion")) {
+      useInstaller.set(false)
+    }
     bundledPlugins(properties("platformGlobalBundledPlugins").split(','))
 
     testFramework(TestFrameworkType.Platform)
@@ -129,7 +131,7 @@ intellijPlatform {
       recommended()
 
       properties("pluginVerificationAdditionalIdes").split(",").forEach { ide ->
-        ide(ide, properties("platformVersion"))
+        create(ide, properties("platformVersion"))
       }
     }
   }

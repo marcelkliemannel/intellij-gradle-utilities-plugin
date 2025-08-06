@@ -71,7 +71,6 @@ class FindLatestGradleReleasesAction :
   }
 
   /** The returned list is ordered by the release date. */
-  @TestOnly
   fun requestLatestGradleGitHubReleases(): List<GradleGitHubRelease> {
     HttpClients.custom().setSSLContext(CertificateManager.getInstance().sslContext).build().use {
       httpclient ->

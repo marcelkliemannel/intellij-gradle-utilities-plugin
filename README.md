@@ -61,9 +61,3 @@ Finds the latest Gradle releases (productive and pre releases) and provides usef
 
 * Edit the user Gradle properties file.
 * Bookmarks to important Gradle related websites.
-
-## Development
-
-This plugin is not seen as a library, this means that code changes do not necessarily adhere to the semantics version rules.
-
-If you want to contribute something, please follow the code style in the `.editorconfig` and sign your commits.

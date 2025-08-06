@@ -6,8 +6,8 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.NlsActions
 import java.nio.file.Files
 import java.nio.file.Path
-import org.apache.commons.io.FileUtils
 import kotlin.io.path.isDirectory
+import org.apache.commons.io.FileUtils
 
 abstract class CollectDirectoriesAction(
   title: @NlsActions.ActionText String,
