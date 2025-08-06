@@ -7,35 +7,43 @@ import com.intellij.openapi.util.text.StringUtil
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilitiesPluginUtils
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.ManageEntriesPanel
 
-class RunningGradleDaemonsPanel
-  : ManageEntriesPanel<GradleDaemon>(COLUMNS,
-                                     CollectRunningGradleDaemonsAction(),
-                                     "No running Gradle daemons",
-                                     "${GradleUtilitiesPluginUtils.TOOLBAR_PLACE_PREFIX}.runninggradledaemons") {
+class RunningGradleDaemonsPanel :
+  ManageEntriesPanel<GradleDaemon>(
+    COLUMNS,
+    CollectRunningGradleDaemonsAction(),
+    "No running Gradle daemons",
+    "${GradleUtilitiesPluginUtils.TOOLBAR_PLACE_PREFIX}.runninggradledaemons",
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
-    private val COLUMNS = listOf<Column<GradleDaemon>>(Column("PID") { it.pid.toString() },
-                                                       Column("Version") { it.version },
-                                                       Column("Status") { it.status },
-                                                       Column("Uptime") { formatDuration(it.uptimeMillis) })
+    private val COLUMNS =
+      listOf<Column<GradleDaemon>>(
+        Column("PID") { it.pid.toString() },
+        Column("Version") { it.version },
+        Column("Status") { it.status },
+        Column("Uptime") { formatDuration(it.uptimeMillis) },
+      )
 
     private fun formatDuration(durationMillis: Long?): String {
       return durationMillis?.let { StringUtil.formatDuration(it) } ?: "Unknown"
     }
 
-    val ALL_DAEMONS: DataKey<List<GradleDaemon>> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.AllDaemons")
-    val SELECTED_DAEMONS: DataKey<List<GradleDaemon>> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.SelectedDaemons")
-    val SELECTED_DAEMON: DataKey<GradleDaemon> = DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.SelectedDaemon")
+    val ALL_DAEMONS: DataKey<List<GradleDaemon>> =
+      DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.AllDaemons")
+    val SELECTED_DAEMONS: DataKey<List<GradleDaemon>> =
+      DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.SelectedDaemons")
+    val SELECTED_DAEMON: DataKey<GradleDaemon> =
+      DataKey.create("Gradle.Utilities.Plugin.RunningGradleDaemons.SelectedDaemon")
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
 
   private var determineDaemonStatusSelected = false
   private val contextMenuActions: ActionGroup = createContextMenuActions()
 
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     table.columnModel.getColumn(1).preferredWidth = 180
@@ -44,10 +52,13 @@ class RunningGradleDaemonsPanel
     init()
   }
 
-  // -- Exported Methods -------------------------------------------------------------------------------------------- //
+  // -- Exposed Methods ----------------------------------------------------- //
 
-  override fun createManageAllEntriesActions() = listOf(TerminateGradleDaemonsAction.GracefullyAll(),
-                                                        TerminateGradleDaemonsAction.ForciblyTerminateAll())
+  override fun createManageAllEntriesActions() =
+    listOf(
+      TerminateGradleDaemonsAction.GracefullyAll(),
+      TerminateGradleDaemonsAction.ForciblyTerminateAll(),
+    )
 
   override fun tableContextMenuActions(): ActionGroup = contextMenuActions
 
@@ -56,7 +67,8 @@ class RunningGradleDaemonsPanel
       ALL_DAEMONS.`is`(dataId) -> allEntries()
       SELECTED_DAEMONS.`is`(dataId) -> selectedEntries()
       SELECTED_DAEMON.`is`(dataId) -> selectedEntry()
-      CollectRunningGradleDaemonsAction.DETERMINE_DAEMON_STATUS.`is`(dataId) -> determineDaemonStatusSelected
+      CollectRunningGradleDaemonsAction.DETERMINE_DAEMON_STATUS.`is`(dataId) ->
+        determineDaemonStatusSelected
       else -> super.doGetData(dataId)
     }
   }
@@ -64,15 +76,14 @@ class RunningGradleDaemonsPanel
   override fun statusTextCollectingEntries(): Pair<String, String?> {
     return if (determineDaemonStatusSelected) {
       Pair("Collecting running Gradle daemons...", "Determining the status may take a moment")
-    }
-    else {
+    } else {
       Pair("Collecting running Gradle daemons...", null)
     }
   }
 
   override fun createSettings(): List<Setting> = listOf(CollectDaemonStatusSetting())
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
 
   private fun createContextMenuActions(): ActionGroup {
     return DefaultActionGroup().apply {
@@ -86,14 +97,16 @@ class RunningGradleDaemonsPanel
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
-  private inner class CollectDaemonStatusSetting
-    : Setting("Collect daemon status",
-              "Collects the status of the daemons by parsing the output of the --status Gradle command. " +
-              "For that the Gradle wrapper from the project and the system Gradle installation will be executed " +
-              "(if these are available).<br /><br />" +
-              "Because of the slow Gradle cold start, collecting the statuses may take a moment.") {
+  private inner class CollectDaemonStatusSetting :
+    Setting(
+      "Collect daemon status",
+      "Collects the status of the daemons by parsing the output of the --status Gradle command. " +
+        "For that the Gradle wrapper from the project and the system Gradle installation will be executed " +
+        "(if these are available).<br /><br />" +
+        "Because of the slow Gradle cold start, collecting the statuses may take a moment.",
+    ) {
 
     override fun isSelected(): Boolean = determineDaemonStatusSelected
 

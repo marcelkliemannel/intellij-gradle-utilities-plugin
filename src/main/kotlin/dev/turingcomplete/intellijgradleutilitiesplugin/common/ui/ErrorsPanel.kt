@@ -9,9 +9,9 @@ import javax.swing.JPanel
 import javax.swing.SwingConstants
 
 class ErrorsPanel(errors: List<String>) : JPanel(VerticalLayout(UIUtil.LARGE_VGAP)) {
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     border = IdeBorderFactory.createTitledBorder("Errors")
@@ -20,11 +20,16 @@ class ErrorsPanel(errors: List<String>) : JPanel(VerticalLayout(UIUtil.LARGE_VGA
       add(JBLabel("<html>$error</html>", AllIcons.Ide.FatalError, SwingConstants.LEFT))
     }
 
-    add(JBLabel("<html>Please see idea.log for details. If one of the errors should not have been happened, " +
-                "please report a bug for the Gradle Utilities plugin.</html>", UIUtil.ComponentStyle.SMALL))
+    add(
+      JBLabel(
+        "<html>Please see idea.log for details. If one of the errors should not have been happened, " +
+          "please report a bug for the Gradle Utilities plugin.</html>",
+        UIUtil.ComponentStyle.SMALL,
+      )
+    )
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

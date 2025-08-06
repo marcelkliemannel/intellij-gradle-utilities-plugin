@@ -7,7 +7,7 @@ junit5 = "5.13.4"
 # See bundled version: https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
 kotlin = "2.1.20"
 version-catalog-update = "1.0.0"
-
+spotless = "7.2.1"
 
 [libraries]
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
@@ -30,6 +30,7 @@ junit-runtime = [
 ]
 
 [plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 intellij-platform = { id = "org.jetbrains.intellij.platform", version.ref = "intellij-platform" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

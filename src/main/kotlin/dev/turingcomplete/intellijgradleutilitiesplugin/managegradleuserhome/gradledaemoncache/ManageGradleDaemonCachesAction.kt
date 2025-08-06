@@ -7,15 +7,17 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActi
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityDialog
 import java.awt.Dimension
 
-class ManageGradleDaemonCachesAction
-  : GradleUtilityAction<Void>("Manage Gradle Daemon Caches",
-                              "Manage all Gradle daemon caches.",
-                              executionMode = ExecutionMode.DIRECT) {
+class ManageGradleDaemonCachesAction :
+  GradleUtilityAction<Void>(
+    "Manage Gradle Daemon Caches",
+    "Manage all Gradle daemon caches.",
+    executionMode = ExecutionMode.DIRECT,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -25,13 +27,15 @@ class ManageGradleDaemonCachesAction
 
   override fun onSuccess(result: Void?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
-      GradleUtilityDialog.show("Manage Gradle Daemon Caches",
-                               { GradleDaemonCachesPanel() },
-                               Dimension(400, 350),
-                               executionContext.project)
+      GradleUtilityDialog.show(
+        "Manage Gradle Daemon Caches",
+        { GradleDaemonCachesPanel() },
+        Dimension(400, 350),
+        executionContext.project,
+      )
     }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

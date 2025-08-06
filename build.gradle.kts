@@ -16,6 +16,7 @@ plugins {
   alias(libs.plugins.intellij.platform)
   alias(libs.plugins.changelog)
   alias(libs.plugins.version.catalog.update)
+  alias(libs.plugins.spotless)
 }
 
 group = properties("pluginGroup")
@@ -38,6 +39,8 @@ dependencies {
     testFramework(TestFrameworkType.JUnit5)
   }
 }
+
+spotless { kotlin { ktfmt().googleStyle() } }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
 

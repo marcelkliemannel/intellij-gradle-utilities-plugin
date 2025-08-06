@@ -11,12 +11,16 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtilityActi
 import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 import java.nio.file.Path
 
-class OpenGradleDaemonLogAction
-  : GradleUtilityAction<Void>("Open Daemon Log", icon = AllIcons.FileTypes.Text, executionMode = ExecutionMode.DIRECT) {
+class OpenGradleDaemonLogAction :
+  GradleUtilityAction<Void>(
+    "Open Daemon Log",
+    icon = AllIcons.FileTypes.Text,
+    executionMode = ExecutionMode.DIRECT,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     showOpensDialogIndicatorOnButtonText = false
@@ -27,26 +31,34 @@ class OpenGradleDaemonLogAction
     }
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun runAction(executionContext: ExecutionContext, progressIndicator: ProgressIndicator) {
     executionContext.project ?: return
 
-    val gradleDaemon = RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(executionContext.dataContext) ?: throw IllegalStateException("snh: Missing data")
+    val gradleDaemon =
+      RunningGradleDaemonsPanel.SELECTED_DAEMON.getData(executionContext.dataContext)
+        ?: throw IllegalStateException("snh: Missing data")
     gradleDaemon.version ?: return
 
     val gradleHome = GradleUtils.gradleUserHome()
-    val logFile =  gradleHome.resolve(Path.of("daemon", gradleDaemon.version, "daemon-${gradleDaemon.pid}.out.log"))
-    val daemonLogFile = VirtualFileManager.getInstance().findFileByNioPath(logFile)
-                        ?: throw GradleUtilityActionFailedException("Couldn't find Gradle daemon log file: $logFile")
+    val logFile =
+      gradleHome.resolve(
+        Path.of("daemon", gradleDaemon.version, "daemon-${gradleDaemon.pid}.out.log")
+      )
+    val daemonLogFile =
+      VirtualFileManager.getInstance().findFileByNioPath(logFile)
+        ?: throw GradleUtilityActionFailedException(
+          "Couldn't find Gradle daemon log file: $logFile"
+        )
 
     ApplicationManager.getApplication().invokeLaterOnWriteThread {
       FileEditorManager.getInstance(executionContext.project).openFile(daemonLogFile, true)
     }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

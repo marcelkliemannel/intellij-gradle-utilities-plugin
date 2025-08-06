@@ -6,11 +6,14 @@ import com.intellij.openapi.ui.DialogWrapper
 import java.awt.Dimension
 import javax.swing.JComponent
 
-class GradleUtilityDialog private constructor(title: String,
-                                              project: Project?,
-                                              private val createComponent: () -> JComponent,
-                                              size: Dimension) : DialogWrapper(project), DataProvider {
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+class GradleUtilityDialog
+private constructor(
+  title: String,
+  project: Project?,
+  private val createComponent: () -> JComponent,
+  size: Dimension,
+) : DialogWrapper(project), DataProvider {
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     fun show(title: String, createComponent: () -> JComponent, size: Dimension, project: Project?) {
@@ -18,11 +21,11 @@ class GradleUtilityDialog private constructor(title: String,
     }
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
 
   private val component by lazy { createComponent() }
 
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     this.title = title
@@ -31,7 +34,7 @@ class GradleUtilityDialog private constructor(title: String,
     init()
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun createCenterPanel() = component
 
@@ -44,7 +47,7 @@ class GradleUtilityDialog private constructor(title: String,
     super.show()
   }
 
-  override fun getData(dataId: String) : Any? {
+  override fun getData(dataId: String): Any? {
     return when (val component0 = component) {
       is DataProvider -> component0.getData(dataId)
       else -> null
@@ -53,12 +56,12 @@ class GradleUtilityDialog private constructor(title: String,
 
   override fun createActions() = arrayOf(myOKAction)
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
 
   interface DialogHandler {
 
     fun onDialogShow()
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

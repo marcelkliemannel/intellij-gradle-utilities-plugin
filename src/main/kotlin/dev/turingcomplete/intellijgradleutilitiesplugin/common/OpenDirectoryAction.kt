@@ -11,25 +11,28 @@ import com.intellij.openapi.util.SystemInfo
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-open class OpenDirectoryAction
-  : GradleUtilityAction<List<Path>>(createTitle(), null, AllIcons.Actions.MenuOpen,
-                                    executionMode = ExecutionMode.DIRECT) {
+open class OpenDirectoryAction :
+  GradleUtilityAction<List<Path>>(
+    createTitle(),
+    null,
+    AllIcons.Actions.MenuOpen,
+    executionMode = ExecutionMode.DIRECT,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     private fun createTitle(): String {
       return if (SystemInfo.isMac) {
         ActionsBundle.message("action.RevealIn.name.mac")
-      }
-      else {
+      } else {
         ActionsBundle.message("action.RevealIn.name.other", RevealFileAction.getFileManagerName())
       }
     }
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     showOpensDialogIndicatorOnButtonText = false
@@ -39,7 +42,7 @@ open class OpenDirectoryAction
     isEnabled = { e -> directory(e.dataContext)?.exists() ?: false }
   }
 
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -47,8 +50,9 @@ open class OpenDirectoryAction
     directory(executionContext.dataContext)?.takeIf { it.exists() }?.let { BrowserUtil.browse(it) }
   }
 
-  open fun directory(dataContext: DataContext): Path? = CommonDataKeys.SELECTED_DIRECTORY.getData(dataContext)?.path
+  open fun directory(dataContext: DataContext): Path? =
+    CommonDataKeys.SELECTED_DIRECTORY.getData(dataContext)?.path
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

@@ -9,21 +9,28 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.ui.GradleUtilityD
 import icons.GradleIcons
 import java.awt.Dimension
 
-open class ManageRunningGradleDaemonsAction
-  : GradleUtilityAction<List<GradleDaemon>>("Manage Running Gradle Daemons",
-                                            "Manages all running Gradle daemons.",
-                                            ICON,
-                                            executionMode = ExecutionMode.DIRECT) {
+open class ManageRunningGradleDaemonsAction :
+  GradleUtilityAction<List<GradleDaemon>>(
+    "Manage Running Gradle Daemons",
+    "Manages all running Gradle daemons.",
+    ICON,
+    executionMode = ExecutionMode.DIRECT,
+  ) {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
-    private val ICON = ExecutionUtil.getLiveIndicator(GradleIcons.Gradle, GradleIcons.Gradle.iconWidth, GradleIcons.Gradle.iconWidth)
+    private val ICON =
+      ExecutionUtil.getLiveIndicator(
+        GradleIcons.Gradle,
+        GradleIcons.Gradle.iconWidth,
+        GradleIcons.Gradle.iconWidth,
+      )
   }
 
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exposed Methods --------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exported Methods ---------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -33,13 +40,15 @@ open class ManageRunningGradleDaemonsAction
 
   override fun onSuccess(result: List<GradleDaemon>?, executionContext: ExecutionContext) {
     ApplicationManager.getApplication().invokeLater {
-      GradleUtilityDialog.show("Running Gradle Daemons",
-                               { RunningGradleDaemonsPanel() },
-                               Dimension(500, 350),
-                               executionContext.project)
+      GradleUtilityDialog.show(
+        "Running Gradle Daemons",
+        { RunningGradleDaemonsPanel() },
+        Dimension(500, 350),
+        executionContext.project,
+      )
     }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }

@@ -25,25 +25,27 @@ import javax.swing.JTable
 import javax.swing.UIManager
 
 internal object UiUtils {
-  // -- Properties -------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
-  // -- Exported Methods -------------------------------------------------------------------------------------------- //
+  // -- Properties ---------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
+  // -- Exposed Methods ----------------------------------------------------- //
 
-  fun createDefaultGridBag() = GridBag()
-          .setDefaultAnchor(GridBagConstraints.NORTHWEST)
-          .setDefaultInsets(0, 0, 0, 0)
-          .setDefaultFill(GridBagConstraints.NONE)
+  fun createDefaultGridBag() =
+    GridBag()
+      .setDefaultAnchor(GridBagConstraints.NORTHWEST)
+      .setDefaultInsets(0, 0, 0, 0)
+      .setDefaultFill(GridBagConstraints.NONE)
 
   fun createCopyToClipboardButton(value: () -> String): JLabel {
     return object : JLabel(AllIcons.Actions.Copy) {
 
       init {
         object : ClickListener() {
-          override fun onClick(e: MouseEvent, clickCount: Int): Boolean {
-            CopyPasteManager.getInstance().setContents(StringSelection(value()))
-            return true
+            override fun onClick(e: MouseEvent, clickCount: Int): Boolean {
+              CopyPasteManager.getInstance().setContents(StringSelection(value()))
+              return true
+            }
           }
-        }.installOn(this)
+          .installOn(this)
 
         toolTipText = "Copy to Clipboard"
       }
@@ -51,16 +53,17 @@ internal object UiUtils {
   }
 
   fun createLink(title: String, url: String): HyperlinkLabel {
-    return HyperlinkLabel(title).apply {
-      setHyperlinkTarget(url)
-    }
+    return HyperlinkLabel(title).apply { setHyperlinkTarget(url) }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   object Table {
-    fun createContextMenuMouseListener(place: String, actionGroup: () -> ActionGroup?): MouseAdapter {
+    fun createContextMenuMouseListener(
+      place: String,
+      actionGroup: () -> ActionGroup?,
+    ): MouseAdapter {
       return object : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
           handleMouseEvent(e)
@@ -74,8 +77,9 @@ internal object UiUtils {
           if (e is MouseEvent && e.isPopupTrigger) {
             actionGroup()?.let {
               ActionManager.getInstance()
-                      .createActionPopupMenu(place, it).component
-                      .show(e.getComponent(), e.x, e.y)
+                .createActionPopupMenu(place, it)
+                .component
+                .show(e.getComponent(), e.x, e.y)
             }
           }
         }
@@ -93,7 +97,7 @@ internal object UiUtils {
     }
   }
 
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 
   object Panel {
     class TextAreaPanel(value: String) : BorderLayoutPanel() {
@@ -102,14 +106,14 @@ internal object UiUtils {
         minimumSize = Dimension(150, 50)
         preferredSize = Dimension(550, 300)
 
-        val textArea = JBTextArea(value).apply {
-          isEditable = false
-        }
+        val textArea = JBTextArea(value).apply { isEditable = false }
 
-        addToCenter(ScrollPaneFactory.createScrollPane(textArea).apply {
-          minimumSize = this@TextAreaPanel.minimumSize
-          preferredSize = this@TextAreaPanel.preferredSize
-        })
+        addToCenter(
+          ScrollPaneFactory.createScrollPane(textArea).apply {
+            minimumSize = this@TextAreaPanel.minimumSize
+            preferredSize = this@TextAreaPanel.preferredSize
+          }
+        )
       }
     }
   }
@@ -129,7 +133,6 @@ fun GridBag.overrideTopInset(topInset: Int): GridBag {
   this.insets(topInset, this.insets.left, this.insets.bottom, this.insets.right)
   return this
 }
-
 
 fun JBLabel.copyable(): JBLabel {
   setCopyable(true)

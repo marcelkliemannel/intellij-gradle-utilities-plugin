@@ -17,25 +17,28 @@ import dev.turingcomplete.intellijgradleutilitiesplugin.common.GradleUtils
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
-class EditUserGradlePropertiesAction
-    : GradleUtilityAction<Void>("Edit User Gradle Properties",
-                              "Opens the user Gradle properties file in editor.",
-                              executionMode = ExecutionMode.DIRECT), DumbAware {
+class EditUserGradlePropertiesAction :
+  GradleUtilityAction<Void>(
+    "Edit User Gradle Properties",
+    "Opens the user Gradle properties file in editor.",
+    executionMode = ExecutionMode.DIRECT,
+  ),
+  DumbAware {
 
-  // -- Companion Object -------------------------------------------------------------------------------------------- //
+  // -- Companion Object ---------------------------------------------------- //
 
   companion object {
     private val LOG = Logger.getInstance(EditUserGradlePropertiesAction::class.java)
   }
 
-  // -- Variables --------------------------------------------------------------------------------------------------- //
-  // -- Initialization ---------------------------------------------------------------------------------------------- //
+  // -- Variables ----------------------------------------------------------- //
+  // -- Initialization ------------------------------------------------------ //
 
   init {
     showOpensDialogIndicatorOnButtonText = false
   }
 
-  // -- Exported Methods -------------------------------------------------------------------------------------------- //
+  // -- Exposed Methods ----------------------------------------------------- //
 
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -46,11 +49,14 @@ class EditUserGradlePropertiesAction
     if (!Files.exists(userGradlePropertiesFile)) {
       var createFile = false
       ApplicationManager.getApplication().invokeAndWait {
-        createFile = MessageDialogBuilder.yesNoCancel("Create User Gradle Properties File",
-                                                      "<html>The user Gradle properties file:<br />" +
-                                                      "<b>$userGradlePropertiesFile</b><br />" +
-                                                      "does not exist. Should an empty file be created?")
-                .show(executionContext.project) == Messages.YES
+        createFile =
+          MessageDialogBuilder.yesNoCancel(
+              "Create User Gradle Properties File",
+              "<html>The user Gradle properties file:<br />" +
+                "<b>$userGradlePropertiesFile</b><br />" +
+                "does not exist. Should an empty file be created?",
+            )
+            .show(executionContext.project) == Messages.YES
       }
 
       if (!createFile) {
@@ -64,12 +70,15 @@ class EditUserGradlePropertiesAction
     }
 
     ApplicationManager.getApplication().invokeLater {
-      val userGradlePropertiesVf = VirtualFileManager.getInstance().refreshAndFindFileByNioPath(userGradlePropertiesFile)
-                                   ?: throw GradleUtilityActionFailedException("User Gradle properties file '${userGradlePropertiesFile}' does not exist.")
+      val userGradlePropertiesVf =
+        VirtualFileManager.getInstance().refreshAndFindFileByNioPath(userGradlePropertiesFile)
+          ?: throw GradleUtilityActionFailedException(
+            "User Gradle properties file '${userGradlePropertiesFile}' does not exist."
+          )
       FileEditorManagerEx.getInstanceEx(project).openFile(userGradlePropertiesVf, true)
     }
   }
 
-  // -- Private Methods --------------------------------------------------------------------------------------------- //
-  // -- Inner Type -------------------------------------------------------------------------------------------------- //
+  // -- Private Methods ----------------------------------------------------- //
+  // -- Inner Type ---------------------------------------------------------- //
 }
